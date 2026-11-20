@@ -1,0 +1,54 @@
+/* Studio Window Container & Dynamic Width Transition */
+#studio-window {
+  width: min(100%, var(--studio-current-width, var(--studio-width-compact)));
+  max-width: 100%;
+  border-color: var(--studio-border);
+  border-radius: var(--studio-radius);
+  background-color: var(--studio-bg);
+  box-shadow: var(--studio-shadow);
+  transition: var(--studio-transition);
+}
+
+#studio-window.is-expanded {
+  --studio-current-width: var(--studio-width-expanded);
+}
+
+@media (width <= 860px) {
+  body {
+    padding: var(--primitive-space-3);
+  }
+
+  #studio-window {
+    width: 100%;
+    border-radius: var(--r-3);
+  }
+
+  #studio-window > .grid-cols-2 {
+    border-top-width: 0;
+    grid-template-columns: 1fr;
+  }
+
+  #studio-window > .grid-cols-2 > section:first-child {
+    border-right: none;
+    border-bottom: 1px solid var(--border-default);
+  }
+}
+
+@media (width <= 480px) {
+  body {
+    padding: var(--primitive-space-2);
+  }
+}
+
+@media (height <= 520px) {
+  body {
+    align-items: flex-start;
+    padding: var(--primitive-space-1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #studio-window {
+    transition: none;
+  }
+}

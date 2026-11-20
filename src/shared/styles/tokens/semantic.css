@@ -1,0 +1,127 @@
+/**
+ * TIER 2 — SEMANTIC TOKENS
+ * Maps Tier 1 primitives to semantic roles: surfaces, text hierarchy, borders, statuses,
+ * elevations/shadows, smooth transitions, and tactile transforms.
+ */
+:root {
+  /* --- Semantic Surfaces --- */
+  --surface-page: var(--primitive-graphite-950);
+  --surface-page-glow: var(--primitive-graphite-900);
+  --surface-viewport: var(--primitive-graphite-900);
+  --surface-panel: var(--primitive-graphite-850);
+  --surface-panel-hover: var(--primitive-graphite-900);
+  --surface-control: var(--primitive-graphite-800);
+  --surface-control-hover: var(--primitive-graphite-700);
+  --surface-control-active: var(--primitive-graphite-600);
+  --surface-button-secondary: var(--primitive-graphite-800);
+  --surface-button-secondary-hover: var(--primitive-graphite-700);
+  --surface-pill: var(--primitive-graphite-600);
+  --surface-popover: var(--primitive-alpha-panel-97);
+  --surface-tooltip: var(--primitive-alpha-panel-97);
+  --surface-chip: var(--primitive-graphite-900);
+  --surface-chip-active: var(--primitive-graphite-50);
+  --surface-toast: var(--primitive-graphite-800);
+  --surface-drop-overlay: var(--primitive-alpha-surface-84);
+  --surface-qr-paper: var(--primitive-white);
+  --surface-qr-checker: var(--primitive-graphite-50);
+
+  /* --- Semantic Text / Ink Hierarchy (5 clear tiers) --- */
+  --text-primary: var(--primitive-graphite-50);
+  --text-secondary: var(--primitive-graphite-100);
+  --text-muted: var(--primitive-graphite-200);
+  --text-subtle: var(--primitive-graphite-300);
+  --text-faint: var(--primitive-graphite-400);
+  --text-inverse: var(--primitive-graphite-850);
+
+  /* --- Semantic Borders & Outlines --- */
+  --border-subtle: var(--primitive-graphite-800);
+  --border-default: var(--primitive-graphite-700);
+  --border-strong: var(--primitive-graphite-550);
+  --border-active: var(--primitive-graphite-500);
+  --border-focus-ring: var(--primitive-blue-ring);
+  --border-focus-solid: var(--primitive-graphite-50);
+  --border-invalid: var(--primitive-red-500);
+
+  /* --- Semantic Statuses --- */
+  --status-success-bg: var(--primitive-emerald-950);
+  --status-success-border: var(--primitive-emerald-800);
+  --status-success-text: var(--primitive-emerald-300);
+  --status-success-accent: var(--primitive-emerald-400);
+  --status-warning-bg: var(--primitive-amber-950);
+  --status-warning-border: var(--primitive-amber-800);
+  --status-warning-text: var(--primitive-amber-300);
+  --status-warning-accent: var(--primitive-amber-400);
+  --status-danger-bg: var(--primitive-red-950);
+  --status-danger-border: var(--primitive-red-800);
+  --status-danger-text: var(--primitive-red-400);
+  --status-danger-accent: var(--primitive-red-500);
+  --status-info-bg: var(--primitive-blue-950);
+  --status-info-border: var(--primitive-blue-800);
+  --status-info-text: var(--primitive-blue-400);
+  --status-info-accent: var(--primitive-blue-500);
+  --status-neutral-dot: var(--primitive-graphite-400);
+
+  /* --- Semantic Elevations & Shadows --- */
+  --elevation-xs: 0 1px 2px var(--primitive-alpha-black-04);
+  --elevation-pill:
+    0 2px 6px -1px var(--primitive-alpha-black-35),
+    0 0 0 1px var(--primitive-alpha-white-04);
+  --elevation-dropzone: 0 4px 12px var(--primitive-alpha-black-12);
+  --elevation-md:
+    0 8px 20px -6px var(--primitive-alpha-black-55),
+    0 0 0 1px var(--primitive-alpha-white-04);
+  --elevation-lg:
+    0 24px 48px -12px var(--primitive-alpha-black-65),
+    0 0 0 1px var(--primitive-alpha-white-04);
+  --elevation-focus-field: 0 0 0 3px var(--primitive-alpha-black-12);
+  --elevation-focus-switch:
+    0 0 0 2px var(--surface-panel), 0 0 0 4px var(--border-focus-ring);
+
+  /* --- Semantic Spacing, Radii & Sizing --- */
+  --sp-1: var(--primitive-space-1);
+  --sp-2: var(--primitive-space-2);
+  --sp-3: var(--primitive-space-3);
+  --sp-4: var(--primitive-space-4);
+  --sp-5: var(--primitive-space-6);
+  --r-1: var(--primitive-radius-sm);
+  --r-2: var(--primitive-radius-md);
+  --r-3: var(--primitive-radius-lg);
+  --r-4: var(--primitive-radius-xl);
+  --h-control: var(--primitive-space-8);
+  --h-export-btn: var(--primitive-space-9);
+  --h-header: var(--primitive-space-12);
+
+  /* --- Semantic Motion, Transitions & Tactile Transforms --- */
+  --dur-instant: var(--primitive-dur-instant);
+  --dur-fast: var(--primitive-dur-fast);
+  --dur-base: var(--primitive-dur-base);
+  --dur-slow: var(--primitive-dur-slow);
+  --ease-out: var(--primitive-ease-out);
+  --ease-inout: var(--primitive-ease-inout);
+  --ease-spring: var(--primitive-ease-spring);
+  --transition-colors:
+    color var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out);
+  --transition-all-fast: all var(--dur-fast) var(--ease-inout);
+  --transition-transform-fast: transform var(--dur-base) var(--ease-inout);
+  --transition-tactile:
+    transform var(--dur-instant) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+  --transition-icon-tactile:
+    transform var(--dur-instant) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+  --transition-field:
+    background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out),
+    outline-color var(--dur-fast) var(--ease-out);
+  --transition-fade: opacity var(--dur-base) var(--ease-out);
+  --transform-tactile-hover: translateY(-0.5px);
+  --transform-tactile-active: translateY(0.5px) scale(0.98);
+  --transform-icon-active: scale(0.92);
+}

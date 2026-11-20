@@ -1,0 +1,5 @@
+/* Tabular Numeric Readouts */
+#matrix-info,
+#png-size-label {
+  font-variant-numeric: tabular-nums;
+}

@@ -1,0 +1,33 @@
+/**
+ * QR Studio — Master Stylesheet
+ * 3-Tier Design Token System + FSD Layer Styles
+ */
+
+/* Tier 1, Tier 2, Tier 3 Design Tokens */
+@import "../../shared/styles/tokens/primitives.css";
+@import "../../shared/styles/tokens/semantic.css";
+@import "../../shared/styles/tokens/components.css";
+
+/* Base & Utility Layer */
+@import "./utilities.css";
+@import "./base.css";
+
+/* Shared UI Components */
+@import "../../shared/ui/segmented-control/segmented-control.css";
+@import "../../shared/ui/scrubber/scrubber.css";
+@import "../../shared/ui/odometer/odometer.css";
+@import "../../shared/ui/tilt-card/tilt-card.css";
+@import "../../shared/ui/morph-button/morph-button.css";
+@import "../../shared/ui/toast/toast.css";
+
+/* Features Layer */
+@import "../../features/payload-editor/ui/payload-editor.css";
+@import "../../features/emblem-controls/ui/emblem-controls.css";
+@import "../../features/scan-health/ui/scan-health.css";
+
+/* Widgets Layer */
+@import "../../widgets/generator-controls/ui/generator-controls.css";
+@import "../../widgets/preview-stage/ui/preview-stage.css";
+
+/* Pages Layer */
+@import "../../pages/qr-studio/ui/qr-studio-page.css";

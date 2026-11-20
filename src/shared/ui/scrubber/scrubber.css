@@ -1,0 +1,205 @@
+/* Smoothness & Quiet-Zone Scrubber */
+.scrub {
+  --p01: 0;
+
+  position: relative;
+  display: flex;
+  height: var(--scrubber-height);
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--scrubber-padding-x);
+  border-radius: var(--scrubber-radius);
+  background: var(--scrubber-bg);
+  cursor: ew-resize;
+  font-size: var(--primitive-fs-sm);
+  font-weight: var(--primitive-fw-medium);
+  touch-action: none;
+  user-select: none;
+}
+
+.scrub-fill {
+  position: absolute;
+  top: var(--primitive-space-0-75);
+  bottom: var(--primitive-space-0-75);
+  left: var(--primitive-space-0-75);
+  overflow: hidden;
+  width: calc((100% - 6px) * var(--p01));
+  border-radius: var(--scrubber-fill-radius);
+  background: var(--scrubber-fill-bg);
+  box-shadow: var(--scrubber-fill-shadow);
+  transition: var(--scrubber-fill-transition);
+}
+
+.scrub.dragging .scrub-fill {
+  transition: none;
+}
+
+.scrub-handle {
+  position: absolute;
+  top: 50%;
+  right: var(--primitive-space-1-5);
+  width: var(--primitive-space-0-5);
+  height: var(--primitive-space-3);
+  border-radius: var(--primitive-radius-2xs);
+  margin-top: -6px;
+  background: var(--scrubber-handle-color);
+  transition: var(--scrubber-handle-transition);
+}
+
+.scrub:hover .scrub-handle,
+.scrub.dragging .scrub-handle {
+  background: var(--scrubber-handle-active-color);
+}
+
+.scrub.no-handle .scrub-handle {
+  opacity: 0;
+}
+
+.scrub-ticks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.scrub-ticks i {
+  position: absolute;
+  top: 50%;
+  left: calc(3px + (100% - 6px) * var(--t));
+  width: 1px;
+  height: var(--primitive-space-2);
+  margin-top: calc(var(--primitive-space-1) * -1);
+  background: var(--scrubber-tick-color);
+  pointer-events: none;
+}
+
+/* Stepped 12-module ticks positioned via nth-child tokens */
+.scrub-ticks i:nth-child(1) {
+  --t: 0.0833;
+}
+
+.scrub-ticks i:nth-child(2) {
+  --t: 0.1667;
+}
+
+.scrub-ticks i:nth-child(3) {
+  --t: 0.25;
+}
+
+.scrub-ticks i:nth-child(4) {
+  --t: 0.3333;
+}
+
+.scrub-ticks i:nth-child(5) {
+  --t: 0.4167;
+}
+
+.scrub-ticks i:nth-child(6) {
+  --t: 0.5;
+}
+
+.scrub-ticks i:nth-child(7) {
+  --t: 0.5833;
+}
+
+.scrub-ticks i:nth-child(8) {
+  --t: 0.6667;
+}
+
+.scrub-ticks i:nth-child(9) {
+  --t: 0.75;
+}
+
+.scrub-ticks i:nth-child(10) {
+  --t: 0.8333;
+}
+
+.scrub-ticks i:nth-child(11) {
+  --t: 0.9167;
+}
+
+.scrub:focus-visible {
+  outline-offset: -2px;
+}
+
+.scrub-label {
+  position: relative;
+  color: var(--text-muted);
+}
+
+.scrub-value {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  gap: 1px;
+}
+
+.scrub-value b {
+  font-weight: var(--primitive-fw-medium);
+  pointer-events: none;
+}
+
+.scrub-value small {
+  color: var(--text-muted);
+  font-size: var(--primitive-fs-2xs);
+  pointer-events: none;
+}
+
+.scrub-input {
+  width: var(--scrubber-input-width);
+  height: var(--scrubber-input-height);
+  padding: 0 var(--sp-1);
+  border: 1px solid var(--scrubber-input-border);
+  border-radius: var(--r-1);
+  background: var(--scrubber-input-bg);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: var(--primitive-fs-sm);
+  font-weight: var(--primitive-fw-medium);
+  outline: none;
+  text-align: right;
+}
+
+.scrub-input::-webkit-inner-spin-button {
+  display: none;
+}
+
+/* Margin recommendation dot (static indicator with tactile hover scale) */
+.scrub .qz-dot {
+  position: absolute;
+  z-index: var(--primitive-z-above);
+  top: var(--primitive-space-1-25);
+  right: var(--primitive-space-1-25);
+  display: none;
+  width: var(--primitive-space-1-5);
+  height: var(--primitive-space-1-5);
+  border-radius: 50%;
+  background: var(--scrubber-rec-dot-color);
+  transition:
+    transform var(--dur-fast) var(--ease-out),
+    opacity var(--dur-fast) var(--ease-out);
+}
+
+.scrub .qz-dot::after {
+  position: absolute;
+  border-radius: 50%;
+  content: "";
+  inset: calc(var(--primitive-space-2) * -1);
+}
+
+.scrub[data-rec="1"] .qz-dot {
+  display: block;
+}
+
+.scrub[data-rec="1"] .qz-dot:hover {
+  transform: scale(1.2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scrub-fill,
+  .scrub-handle,
+  .scrub .qz-dot {
+    transition: none;
+  }
+}

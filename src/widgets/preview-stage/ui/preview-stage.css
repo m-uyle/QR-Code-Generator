@@ -1,0 +1,20 @@
+/* Checkerboard Pattern for Transparent QR Preview */
+#qr-output-container {
+  min-width: var(--qr-output-min-size);
+  min-height: var(--qr-output-min-size);
+}
+
+.transparent-checker {
+  background-color: var(--surface-qr-paper);
+  background-image:
+    linear-gradient(45deg, var(--surface-qr-checker) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--surface-qr-checker) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--surface-qr-checker) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--surface-qr-checker) 75%);
+  background-position:
+    0 0,
+    0 8px,
+    8px -8px,
+    -8px 0;
+  background-size: var(--preview-checker-size) var(--preview-checker-size);
+}

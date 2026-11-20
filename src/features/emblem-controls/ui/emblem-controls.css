@@ -1,0 +1,41 @@
+/* Dropzone Magnetic Lift & Drag Over */
+#dropzone-logo.dropzone-dragover {
+  border-color: var(--dropzone-dragover-border);
+  background-color: var(--dropzone-dragover-bg);
+  box-shadow: var(--dropzone-dragover-shadow);
+  transform: var(--dropzone-dragover-transform);
+}
+
+.drop-hint {
+  position: absolute;
+  z-index: var(--primitive-z-overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-drop-overlay);
+  color: var(--text-primary);
+  font-size: var(--primitive-fs-sm);
+  font-weight: var(--primitive-fw-medium);
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: var(--transition-fade);
+}
+
+.drop-hint::before {
+  position: absolute;
+  border: 1.5px dashed var(--border-active);
+  border-radius: var(--r-2);
+  content: "";
+  inset: var(--primitive-space-2-5);
+}
+
+#tilt-container.drop-active .drop-hint {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drop-hint {
+    transition: none;
+  }
+}

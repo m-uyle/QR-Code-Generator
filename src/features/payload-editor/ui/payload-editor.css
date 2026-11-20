@@ -1,0 +1,55 @@
+/* Elastic Accordion & Field Transitions */
+#payload-accordion-container {
+  overflow: hidden;
+  height: var(--accordion-h, auto);
+  transition: var(--accordion-transition);
+  will-change: height;
+}
+
+.type-field {
+  opacity: 1;
+  transform: translateY(0);
+  transition: var(--field-swap-transition);
+}
+
+.type-field.leaving {
+  opacity: 0;
+  transform: var(--field-leaving-transform);
+}
+
+/* Accessible Form Elements */
+.field-input {
+  border: 1px solid transparent;
+  border-radius: var(--field-radius);
+  background-color: var(--field-bg);
+  color: var(--field-text-color);
+  font-size: var(--primitive-fs-sm);
+  outline: 1px solid transparent;
+  outline-offset: -1px;
+  transition: var(--field-transition);
+}
+
+.field-input:focus {
+  border-color: var(--field-border-focus);
+  background-color: var(--field-bg-focus);
+  box-shadow: var(--field-focus-shadow);
+}
+
+/* Live Field Validation (smooth outline & color transition, no shake) */
+.field-input[aria-invalid="true"],
+div.rounded-lg:has(> input[aria-invalid="true"]) {
+  outline: 1px solid var(--border-invalid);
+  outline-offset: -1px;
+}
+
+input[aria-invalid="true"] {
+  color: var(--status-danger-text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #payload-accordion-container,
+  .type-field,
+  .field-input {
+    transition: none;
+  }
+}

@@ -1,0 +1,90 @@
+/* Toast & Undo Toast Notifications */
+.app-toast {
+  display: flex;
+  align-items: center;
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--toast-border);
+  border-radius: var(--r-3);
+  background: var(--toast-bg);
+  box-shadow: var(--toast-shadow);
+  color: var(--toast-text);
+  font-size: var(--primitive-fs-sm);
+  font-weight: var(--primitive-fw-medium);
+  gap: var(--sp-2);
+  transition: var(--toast-transition);
+}
+
+.app-toast.is-leaving {
+  opacity: 0;
+  transform: var(--toast-leaving-transform);
+}
+
+.undo-toast {
+  position: fixed;
+  z-index: var(--primitive-z-undo);
+  top: var(--undo-top, 20px);
+  right: var(--undo-right, 20px);
+  display: flex;
+  overflow: hidden;
+  align-items: center;
+  padding: var(--sp-2) var(--sp-2) var(--sp-2) var(--sp-4);
+  border: 1px solid var(--toast-border);
+  border-radius: var(--r-3);
+  background: var(--toast-bg);
+  box-shadow: var(--toast-shadow);
+  color: var(--toast-text);
+  font-size: var(--primitive-fs-sm);
+  font-weight: var(--primitive-fw-medium);
+  gap: var(--sp-3);
+  opacity: 0;
+  transform: var(--undo-hidden-transform);
+  transition: var(--undo-transition);
+}
+
+.undo-toast.on {
+  opacity: 1;
+  transform: none;
+}
+
+.undo-action-btn {
+  padding: var(--primitive-space-0-5) var(--sp-2);
+  border-radius: var(--r-1);
+  background-color: var(--undo-btn-bg);
+  color: var(--text-primary);
+  font-weight: var(--primitive-fw-medium);
+  transition: var(--btn-tactile-transition);
+}
+
+.undo-action-btn:hover {
+  background-color: var(--undo-btn-bg-hover);
+  transform: var(--btn-tactile-hover-transform);
+}
+
+.undo-action-btn:active {
+  transform: var(--btn-tactile-active-transform);
+}
+
+.undo-bar {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: var(--primitive-space-0-5);
+  background: var(--undo-bar-bg);
+  transform: scaleX(1);
+  transform-origin: left;
+  transition: transform var(--undo-duration, 5000ms) linear;
+}
+
+.undo-toast.on .undo-bar {
+  transform: scaleX(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-toast,
+  .undo-toast,
+  .undo-action-btn,
+  .undo-bar {
+    transition: none;
+  }
+}

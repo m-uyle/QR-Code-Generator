@@ -1,0 +1,195 @@
+/**
+ * TIER 1 — PRIMITIVE TOKENS
+ * Deduplicated, perceptually distinct raw scales for color, alpha, spacing, sizing,
+ * border-radius, typography, motion (durations & easings), and z-index.
+ * No UI component references --primitive-* directly; use Tier 2 (semantic) or Tier 3 (component) tokens.
+ */
+:root {
+  /* --- Graphite Neutral Scale (12 distinct perceptual steps, no 1-2 RGB duplicates) --- */
+  --primitive-graphite-950: #121315;
+  --primitive-graphite-900: #18191d;
+  --primitive-graphite-850: #1e1e22;
+  --primitive-graphite-800: #28292e;
+  --primitive-graphite-700: #32343a;
+  --primitive-graphite-600: #3a3d45;
+  --primitive-graphite-550: #41424b;
+  --primitive-graphite-500: #494b54;
+  --primitive-graphite-450: #5e616d;
+  --primitive-graphite-400: #777a88;
+  --primitive-graphite-300: #989aa6;
+  --primitive-graphite-200: #a8aab4;
+  --primitive-graphite-100: #c8c9cf;
+  --primitive-graphite-50: #e9eaec;
+  --primitive-white: #fff;
+  --primitive-black: #000;
+
+  /* --- Emerald (Success) Scale --- */
+  --primitive-emerald-950: #102a1d;
+  --primitive-emerald-800: #1d4834;
+  --primitive-emerald-400: #53f0bc;
+  --primitive-emerald-300: #77fad5;
+
+  /* --- Amber (Warning) Scale --- */
+  --primitive-amber-950: #2c260d;
+  --primitive-amber-800: #55491a;
+  --primitive-amber-400: #f5a524;
+  --primitive-amber-300: #f69a54;
+
+  /* --- Red (Danger / Error) Scale --- */
+  --primitive-red-950: #270e0e;
+  --primitive-red-800: #3a1212;
+  --primitive-red-500: #e5484d;
+  --primitive-red-400: #e96358;
+
+  /* --- Blue (Info / Focus) Scale --- */
+  --primitive-blue-950: #0c192a;
+  --primitive-blue-800: #13263f;
+  --primitive-blue-500: #3b82f6;
+  --primitive-blue-400: #5d7de3;
+  --primitive-blue-ring: color-mix(
+    in srgb,
+    var(--primitive-blue-500) 55%,
+    transparent
+  );
+
+  /* --- Translucent / Alpha Primitives (Composed from base tokens) --- */
+  --primitive-alpha-white-04: color-mix(
+    in srgb,
+    var(--primitive-white) 4%,
+    transparent
+  );
+  --primitive-alpha-white-10: color-mix(
+    in srgb,
+    var(--primitive-white) 10%,
+    transparent
+  );
+  --primitive-alpha-white-16: color-mix(
+    in srgb,
+    var(--primitive-white) 16%,
+    transparent
+  );
+  --primitive-alpha-white-28: color-mix(
+    in srgb,
+    var(--primitive-white) 28%,
+    transparent
+  );
+  --primitive-alpha-white-60: color-mix(
+    in srgb,
+    var(--primitive-white) 60%,
+    transparent
+  );
+  --primitive-alpha-black-00: color-mix(
+    in srgb,
+    var(--primitive-black) 0%,
+    transparent
+  );
+  --primitive-alpha-black-04: color-mix(
+    in srgb,
+    var(--primitive-black) 4%,
+    transparent
+  );
+  --primitive-alpha-black-12: color-mix(
+    in srgb,
+    var(--primitive-black) 12%,
+    transparent
+  );
+  --primitive-alpha-black-30: color-mix(
+    in srgb,
+    var(--primitive-black) 30%,
+    transparent
+  );
+  --primitive-alpha-black-35: color-mix(
+    in srgb,
+    var(--primitive-black) 35%,
+    transparent
+  );
+  --primitive-alpha-black-55: color-mix(
+    in srgb,
+    var(--primitive-black) 55%,
+    transparent
+  );
+  --primitive-alpha-black-65: color-mix(
+    in srgb,
+    var(--primitive-black) 65%,
+    transparent
+  );
+  --primitive-alpha-panel-97: color-mix(
+    in srgb,
+    var(--primitive-graphite-850) 97%,
+    transparent
+  );
+  --primitive-alpha-surface-84: color-mix(
+    in srgb,
+    var(--primitive-graphite-950) 84%,
+    transparent
+  );
+
+  /* --- Spacing & Sizing Scale --- */
+  --primitive-space-0: 0px;
+  --primitive-space-0-5: 2px;
+  --primitive-space-0-75: 3px;
+  --primitive-space-1: 4px;
+  --primitive-space-1-25: 5px;
+  --primitive-space-1-5: 6px;
+  --primitive-space-2: 8px;
+  --primitive-space-2-5: 10px;
+  --primitive-space-3: 12px;
+  --primitive-space-3-5: 14px;
+  --primitive-space-4: 16px;
+  --primitive-space-5: 20px;
+  --primitive-space-6: 24px;
+  --primitive-space-7: 28px;
+  --primitive-space-8: 32px;
+  --primitive-space-9: 36px;
+  --primitive-space-12: 48px;
+
+  /* --- Border Radius Scale --- */
+  --primitive-radius-2xs: 1px;
+  --primitive-radius-xs: 2px;
+  --primitive-radius-sm: 3px;
+  --primitive-radius-md: 4px;
+  --primitive-radius-lg: 6px;
+  --primitive-radius-xl: 8px;
+  --primitive-radius-pill: 9999px;
+
+  /* --- Typography Scale --- */
+  --primitive-font-sans:
+    "Inter", -apple-system, blinkmacsystemfont, "Segoe UI", roboto, sans-serif;
+  --primitive-font-mono:
+    ui-monospace, sfmono-regular, menlo, monaco, consolas, "Liberation Mono",
+    "Courier New", monospace;
+  --primitive-fs-2xs: 10px;
+  --primitive-fs-xs: 11px;
+  --primitive-fs-sm: 12px;
+  --primitive-fs-lg: 17px;
+  --primitive-lh-none: 1;
+  --primitive-lh-tight: 1.25;
+  --primitive-lh-snug: 1.35;
+  --primitive-lh-normal: 1.4;
+  --primitive-lh-base: 1.5;
+  --primitive-fw-regular: 400;
+  --primitive-fw-medium: 500;
+  --primitive-fw-semibold: 600;
+  --primitive-tracking-tight: -0.025em;
+  --primitive-tracking-wide: 0.05em;
+
+  /* --- Motion Scale (4 distinct durations, 3 easings) --- */
+  --primitive-dur-instant: 80ms;
+  --primitive-dur-fast: 140ms;
+  --primitive-dur-base: 220ms;
+  --primitive-dur-slow: 360ms;
+  --primitive-ease-out: cubic-bezier(0.2, 0.9, 0.2, 1);
+  --primitive-ease-inout: cubic-bezier(0.4, 0, 0.2, 1);
+  --primitive-ease-spring: cubic-bezier(0.3, 1.3, 0.5, 1);
+
+  /* --- Z-Index Scale --- */
+  --primitive-z-base: 1;
+  --primitive-z-above: 2;
+  --primitive-z-overlay: 3;
+  --primitive-z-toast: 50;
+  --primitive-z-popover: 60;
+  --primitive-z-tooltip: 100;
+  --primitive-z-undo: 120;
+
+  color-scheme: dark;
+}
