@@ -2,11 +2,13 @@
   "name": "qr-studio-fsd",
   "version": "1.1.0",
   "private": true,
-  "description": "QR Studio — Desktop Generator refactored to Feature-Sliced Design (FSD v2.1) with a consolidated 3-Tier Design Token System",
+  "description": "Client-side vector and raster QR code generator with custom geometry, emblems, and zero tracking.",
   "type": "module",
   "scripts": {
     "build": "vite build",
+    "check": "ultracite check",
     "dev": "vite",
+    "fix": "ultracite fix",
     "knip": "knip",
     "preview": "vite preview"
   },
@@ -15,7 +17,6 @@
     "knip": "^6.46.1",
     "steiger": "^0.10.0",
     "stylelint": "^18.0.0",
-    "stylelint-config-recess-order": "^7.10.1",
     "stylelint-config-standard": "^41.0.0",
     "stylelint-order": "^8.1.3",
     "ultracite": "^8.3.1",

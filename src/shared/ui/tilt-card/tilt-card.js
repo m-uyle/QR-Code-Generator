@@ -38,28 +38,6 @@ export function setup3DTilt(options = {}) {
       card.style.setProperty("--tilt-tz", `${currentZ.toFixed(2)}px`);
       card.style.setProperty("--tilt-scale", currentScale.toFixed(4));
 
-      const shadowX = (-currentY * 0.85).toFixed(1);
-      const pressOffsetY = isPressed ? 10 : 20;
-      const shadowY = (currentX * 0.95 + pressOffsetY).toFixed(1);
-      const blurRadius = isPressed ? 22 : 38;
-      const shadowAlpha = isPressed ? 0.09 : 0.12 + (currentScale - 1) * 2.2;
-      const shadowA = Math.max(0.06, shadowAlpha).toFixed(3);
-
-      card.style.setProperty("--tilt-sx", `${shadowX}px`);
-      card.style.setProperty("--tilt-sy", `${shadowY}px`);
-      card.style.setProperty(
-        "--tilt-blur",
-        `${(blurRadius + Math.abs(currentX) * 0.8).toFixed(1)}px`
-      );
-      card.style.setProperty(
-        "--tilt-sa",
-        `rgba(0, 0, 0, ${(shadowA * 0.45).toFixed(3)})`
-      );
-      card.style.setProperty(
-        "--tilt-sb",
-        `rgba(0, 0, 0, ${(shadowA * 0.7).toFixed(3)})`
-      );
-
       const glanceY = (50 - currentX * 3.5).toFixed(1);
       const glanceX = (50 + currentY * 3.5).toFixed(1);
       card.style.setProperty("--glance-x", `${glanceX}%`);

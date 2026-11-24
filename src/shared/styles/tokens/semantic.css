@@ -9,21 +9,61 @@
   --surface-page-glow: var(--primitive-graphite-900);
   --surface-viewport: var(--primitive-graphite-900);
   --surface-panel: var(--primitive-graphite-850);
-  --surface-panel-hover: var(--primitive-graphite-900);
-  --surface-control: var(--primitive-graphite-800);
-  --surface-control-hover: var(--primitive-graphite-700);
-  --surface-control-active: var(--primitive-graphite-600);
-  --surface-button-secondary: var(--primitive-graphite-800);
-  --surface-button-secondary-hover: var(--primitive-graphite-700);
-  --surface-pill: var(--primitive-graphite-600);
+  --surface-panel-hover: color-mix(
+    in oklab,
+    var(--surface-panel),
+    var(--primitive-white) 4%
+  );
+  --surface-control: var(--primitive-graphite-700);
+  --surface-control-hover: color-mix(
+    in oklab,
+    var(--surface-control),
+    var(--primitive-white) 10%
+  );
+  --surface-control-active: color-mix(
+    in oklab,
+    var(--surface-control),
+    var(--primitive-white) 20%
+  );
+  --surface-button-secondary: var(--primitive-graphite-700);
+  --surface-button-secondary-hover: color-mix(
+    in oklab,
+    var(--surface-button-secondary),
+    var(--primitive-white) 10%
+  );
+  --surface-pill: var(--primitive-graphite-700);
   --surface-popover: var(--primitive-alpha-panel-97);
   --surface-tooltip: var(--primitive-alpha-panel-97);
   --surface-chip: var(--primitive-graphite-900);
   --surface-chip-active: var(--primitive-graphite-50);
   --surface-toast: var(--primitive-graphite-800);
   --surface-drop-overlay: var(--primitive-alpha-surface-84);
+  --surface-backdrop: var(--primitive-alpha-black-55);
   --surface-qr-paper: var(--primitive-white);
   --surface-qr-checker: var(--primitive-graphite-50);
+  --surface-transparent: var(--primitive-transparent);
+
+  /* --- Translucent Accent Backgrounds (15% tint over transparent via color-mix) --- */
+  --surface-accent-subtle: color-mix(
+    in oklab,
+    var(--status-info-accent) 15%,
+    transparent
+  );
+  --surface-success-subtle: color-mix(
+    in oklab,
+    var(--status-success-accent) 15%,
+    transparent
+  );
+  --surface-warning-subtle: color-mix(
+    in oklab,
+    var(--status-warning-accent) 15%,
+    transparent
+  );
+  --surface-danger-subtle: color-mix(
+    in oklab,
+    var(--status-danger-accent) 15%,
+    transparent
+  );
 
   /* --- Semantic Text / Ink Hierarchy (5 clear tiers) --- */
   --text-primary: var(--primitive-graphite-50);
@@ -33,7 +73,33 @@
   --text-faint: var(--primitive-graphite-400);
   --text-inverse: var(--primitive-graphite-850);
 
+  /* --- Semantic Typography Scale (Harmonic Modular Scale: 12, 14, 16, 20, 24, 32, 40, 48px) --- */
+  --text-xs: var(--primitive-fs-xs); /* 12px / 0.75rem */
+  --text-sm: var(--primitive-fs-sm); /* 14px / 0.875rem */
+  --text-base: var(--primitive-fs-base); /* 16px / 1rem */
+  --text-title: var(--primitive-fs-title); /* 17px / 1.0625rem */
+  --text-lg: var(--primitive-fs-lg); /* 20px / 1.25rem */
+  --text-xl: var(--primitive-fs-xl); /* 24px / 1.5rem */
+  --text-2xl: var(--primitive-fs-2xl); /* 32px / 2rem */
+  --text-3xl: var(--primitive-fs-3xl); /* 40px / 2.5rem */
+  --text-4xl: var(--primitive-fs-4xl); /* 48px / 3rem */
+
+  /* --- Semantic Line Heights (Unitless relative scaling) --- */
+  --lh-none: var(--primitive-lh-none);
+  --lh-tight: var(--primitive-lh-tight);
+  --lh-snug: var(--primitive-lh-snug);
+  --lh-normal: var(--primitive-lh-normal);
+  --lh-base: var(--primitive-lh-base);
+  --lh-relaxed: var(--primitive-lh-relaxed);
+
+  /* --- Fluid Heading Typography Tokens (clamp between mobile & desktop) --- */
+  --heading-h1: clamp(var(--text-xl), 1.25rem + 1vw, var(--text-2xl));
+  --heading-h2: clamp(var(--text-lg), 1.125rem + 0.5vw, var(--text-xl));
+  --heading-h3: clamp(var(--text-base), 0.875rem + 0.5vw, var(--text-lg));
+
   /* --- Semantic Borders & Outlines --- */
+  --border-width-default: var(--primitive-border-width-1);
+  --border-transparent: var(--primitive-transparent);
   --border-subtle: var(--primitive-graphite-800);
   --border-default: var(--primitive-graphite-700);
   --border-strong: var(--primitive-graphite-550);
@@ -62,6 +128,7 @@
   --status-neutral-dot: var(--primitive-graphite-400);
 
   /* --- Semantic Elevations & Shadows --- */
+  --shadow-none: none;
   --elevation-xs: 0 1px 2px var(--primitive-alpha-black-04);
   --elevation-pill:
     0 2px 6px -1px var(--primitive-alpha-black-35),
@@ -77,16 +144,38 @@
   --elevation-focus-switch:
     0 0 0 2px var(--surface-panel), 0 0 0 4px var(--border-focus-ring);
 
-  /* --- Semantic Spacing, Radii & Sizing --- */
+  /* --- Semantic Spacing (4px Grid Multiples) --- */
+  --sp-0-5: var(--primitive-space-0-5);
   --sp-1: var(--primitive-space-1);
   --sp-2: var(--primitive-space-2);
   --sp-3: var(--primitive-space-3);
   --sp-4: var(--primitive-space-4);
-  --sp-5: var(--primitive-space-6);
-  --r-1: var(--primitive-radius-sm);
-  --r-2: var(--primitive-radius-md);
-  --r-3: var(--primitive-radius-lg);
-  --r-4: var(--primitive-radius-xl);
+  --sp-5: var(--primitive-space-5);
+  --sp-6: var(--primitive-space-6);
+  --sp-7: var(--primitive-space-7);
+  --sp-8: var(--primitive-space-8);
+  --sp-9: var(--primitive-space-9);
+  --sp-12: var(--primitive-space-12);
+  --size-dot: var(--primitive-size-dot);
+  --size-icon-sm: var(--primitive-size-icon-sm);
+
+  /* --- Single Master Radius Token & Derived Scale --- */
+  --radius-base: var(--primitive-radius-base);
+  --r-base: var(--radius-base);
+  --r-1: calc(var(--radius-base) * 0.5);
+  --r-2: var(--radius-base);
+  --r-3: calc(var(--radius-base) * 1.5);
+  --r-4: calc(var(--radius-base) * 2);
+  --r-full: var(--primitive-radius-pill);
+
+  /* --- Universal Concentric Radius Formula Token ---
+   * Concentric Radius Formula: R_inner = max(0px, calc(R_outer - Padding))
+   * Inner and outer arcs share the exact same geometric center of curvature.
+   */
+  --radius-concentric: max(
+    0px,
+    calc(var(--radius-outer, var(--radius-base)) - var(--radius-padding, 0px))
+  );
   --h-control: var(--primitive-space-8);
   --h-export-btn: var(--primitive-space-9);
   --h-header: var(--primitive-space-12);
@@ -99,29 +188,18 @@
   --ease-out: var(--primitive-ease-out);
   --ease-inout: var(--primitive-ease-inout);
   --ease-spring: var(--primitive-ease-spring);
-  --transition-colors:
-    color var(--dur-fast) var(--ease-out),
-    background-color var(--dur-fast) var(--ease-out),
-    border-color var(--dur-fast) var(--ease-out);
-  --transition-all-fast: all var(--dur-fast) var(--ease-inout);
-  --transition-transform-fast: transform var(--dur-base) var(--ease-inout);
+  --transition-none: none;
+  --transform-none: none;
+  --transition-colors: var(--transition-none);
+  --transition-all-fast: var(--transition-none);
+  --transition-transform-fast: var(--transition-none);
   --transition-tactile:
-    transform var(--dur-instant) var(--ease-out),
-    background-color var(--dur-fast) var(--ease-out),
-    box-shadow var(--dur-fast) var(--ease-out),
-    border-color var(--dur-fast) var(--ease-out),
-    color var(--dur-fast) var(--ease-out);
-  --transition-icon-tactile:
-    transform var(--dur-instant) var(--ease-out),
-    background-color var(--dur-fast) var(--ease-out),
-    color var(--dur-fast) var(--ease-out);
-  --transition-field:
-    background-color var(--dur-fast) var(--ease-out),
-    border-color var(--dur-fast) var(--ease-out),
-    box-shadow var(--dur-fast) var(--ease-out),
-    outline-color var(--dur-fast) var(--ease-out);
-  --transition-fade: opacity var(--dur-base) var(--ease-out);
-  --transform-tactile-hover: translateY(-0.5px);
-  --transform-tactile-active: translateY(0.5px) scale(0.98);
+    transform var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out);
+  --transition-icon-tactile: transform var(--dur-fast) var(--ease-out);
+  --transition-field: var(--transition-none);
+  --transition-fade: var(--transition-none);
+  --transform-tactile-hover: var(--transform-none);
+  --transform-tactile-active: scale(0.98);
   --transform-icon-active: scale(0.92);
 }

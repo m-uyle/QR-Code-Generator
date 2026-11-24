@@ -1,9 +1,4 @@
-import {
-  getMotionTokens,
-  reducedMotion,
-} from "../../../shared/config/index.js";
-
-let swapTimer = 0;
+const swapTimer = 0;
 
 export function updateAccordionHeight() {
   const elAccordion = document.querySelector("#payload-accordion-container");
@@ -19,22 +14,16 @@ export function updateAccordionHeight() {
 
 export function swapField(prev, next) {
   clearTimeout(swapTimer);
-  const MOTION = getMotionTokens();
-  const show = () => {
-    for (const f of document.querySelectorAll(".type-field")) {
-      f.classList.add("hidden");
-      f.classList.remove("flex", "leaving");
-    }
-    if (next) {
-      next.classList.remove("hidden");
-      next.classList.add("flex");
-    }
-    updateAccordionHeight();
-  };
-  if (!prev || prev === next || reducedMotion()) {
-    show();
+  if (prev && prev === next) {
     return;
   }
-  prev.classList.add("leaving");
-  swapTimer = setTimeout(show, MOTION.fast);
+  for (const f of document.querySelectorAll(".type-field")) {
+    f.classList.add("hidden");
+    f.classList.remove("flex", "leaving");
+  }
+  if (next) {
+    next.classList.remove("hidden");
+    next.classList.add("flex");
+  }
+  updateAccordionHeight();
 }

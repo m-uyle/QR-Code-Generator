@@ -2,5 +2,5 @@ export {
   initEmblemControls,
   renderEmblemControls,
   setLogoFile,
-  updateSizeIcons,
+  syncEmblemControls,
 } from "./ui/EmblemControls.js";

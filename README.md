@@ -5,6 +5,7 @@ Autonomous client-side QR code generator and diagnostic studio.
 ## Features
 
 ### Content Types
+
 - URL with auto-protocol handling
 - Phone call link
 - Wi-Fi network configuration (WPA, WEP, None)
@@ -13,9 +14,9 @@ Autonomous client-side QR code generator and diagnostic studio.
 - Plain text
 - vCard contact card
 - Geographic coordinates (latitude, longitude)
-- SBP payment link (NSPK)
 
 ### Geometry and Style
+
 - Module shapes: Square, Soft, Dots
 - Eye shapes: Square, Rounded, Circle, Leaf
 - Smoothness / corner radius: 0% to 100% in 5% increments
@@ -24,12 +25,14 @@ Autonomous client-side QR code generator and diagnostic studio.
 - Transparent background toggle
 
 ### Emblem and Logo
+
 - Custom image upload (PNG, JPEG, SVG)
 - Preset brand icons
 - Adaptive center cutout with error recovery check
 - Circular and square logo badges
 
 ### Health and Diagnostics
+
 - In-browser scan validation via Web Worker
 - Real-time contrast ratio evaluation
 - Quiet zone compliance warning
@@ -37,5 +40,6 @@ Autonomous client-side QR code generator and diagnostic studio.
 - Detached inspector popover
 
 ### Export
+
 - SVG vector download and clipboard copy
 - PNG raster export with DPI metadata up to 4096 px

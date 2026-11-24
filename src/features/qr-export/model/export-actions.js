@@ -2,8 +2,8 @@ import { buildSvg, fileBase } from "../../../entities/qr-code/index.js";
 import { PNG_DPI, PNG_EXPORT_PX } from "../../../shared/config/index.js";
 import { setPngDpi } from "../../../shared/lib/png-dpi.js";
 import { sizedSvg, svgToCanvas } from "../../../shared/lib/rasterizer.js";
+import { yieldToMain } from "../../../shared/lib/scheduler.js";
 import { morphButtonToSuccess } from "../../../shared/ui/morph-button/index.js";
-import { setOdometer } from "../../../shared/ui/odometer/index.js";
 import { showToast } from "../../../shared/ui/toast/index.js";
 
 const VIEWBOX_DIM_RE = /viewBox="0 0 (?<dim>[0-9.]+)/u;
@@ -15,13 +15,9 @@ export function updatePngLabel(svg) {
     return;
   }
   const px = Math.max(dim, Math.round(PNG_EXPORT_PX / dim) * dim);
-  const label = document.querySelector("#png-size-label");
-  if (label) {
-    setOdometer(label, `PNG ${px} px`);
-  }
   const btn = document.querySelector("#btn-download-png");
   if (btn) {
-    btn.title = `Download PNG: ${px} x ${px} px (${px / dim} px per module)`;
+    btn.title = `Download PNG: ${px} × ${px} px (${px / dim} px per module)`;
   }
 }
 
@@ -53,7 +49,7 @@ export function initQrExport(options = {}) {
     btnDownloadSvg.addEventListener(
       "click",
       () => {
-        const svgCode = buildSvg(true);
+        const svgCode = buildSvg();
         if (!svgCode || svgCode === "EMPTY") {
           showToast("No content to download");
           return;
@@ -79,7 +75,8 @@ export function initQrExport(options = {}) {
       "click",
       async () => {
         try {
-          const svgCode = buildSvg(true);
+          await yieldToMain();
+          const svgCode = buildSvg();
           if (!svgCode || svgCode === "EMPTY") {
             showToast("No content to download");
             return;
@@ -111,7 +108,7 @@ export function initQrExport(options = {}) {
     btnCopySvg.addEventListener(
       "click",
       async () => {
-        const svgCode = buildSvg(true);
+        const svgCode = buildSvg();
         if (!svgCode || svgCode === "EMPTY") {
           showToast("No content to copy");
           return;
@@ -146,7 +143,8 @@ export function initQrExport(options = {}) {
       "click",
       async () => {
         try {
-          const svgCode = buildSvg(true);
+          await yieldToMain();
+          const svgCode = buildSvg();
           if (!svgCode || svgCode === "EMPTY") {
             showToast("No content to copy");
             return;

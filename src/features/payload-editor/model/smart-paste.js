@@ -17,7 +17,6 @@ const GEO_URI_RE = /^geo:(?<lat>-?[\d.]+),(?<lng>-?[\d.]+)/iu;
 const MAPS_CHECK_RE = /maps/iu;
 const MAPS_QUERY_RE =
   /[?&](?:q|ll)=(?<lat1>-?[\d.]+),(?<lng1>-?[\d.]+)|@(?<lat2>-?[\d.]+),(?<lng2>-?[\d.]+)/u;
-const SBP_LINK_RE = /^https?:\/\/qr\.nspk\.ru/iu;
 const RAW_EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/u;
 const RAW_PHONE_RE = /^\+?[\d\s().-]{7,20}$/u;
 const URL_SCHEME_RE = /^https?:\/\//iu;
@@ -37,7 +36,13 @@ function setField(id, value) {
   }
 }
 
-const switchType = (t) => document.querySelector(`#tab-${t}`)?.click();
+const switchType = (t) => {
+  const select = document.querySelector("#select-content-type");
+  if (select && select.value !== t) {
+    select.value = t;
+    select.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+};
 const safeDecode = (x) => {
   try {
     return decodeURIComponent(x);
@@ -157,15 +162,6 @@ function tryParseGeo(s) {
   return null;
 }
 
-function tryParseSbp(s) {
-  if (!SBP_LINK_RE.test(s)) {
-    return null;
-  }
-  switchType("sbp");
-  setField("sbp-link", s);
-  return "СБП";
-}
-
 function tryParseRawEmailOrPhone(s) {
   if (RAW_EMAIL_RE.test(s)) {
     switchType("email");
@@ -205,7 +201,6 @@ export function smartPaste(raw) {
     tryParseSms(s) ||
     tryParseTel(s) ||
     tryParseGeo(s) ||
-    tryParseSbp(s) ||
     tryParseRawEmailOrPhone(s) ||
     tryParseUrl(s);
 

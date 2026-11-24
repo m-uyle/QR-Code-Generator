@@ -19,14 +19,18 @@
 
 /* Accessible Form Elements */
 .field-input {
-  border: 1px solid transparent;
+  border: var(--field-border);
   border-radius: var(--field-radius);
   background-color: var(--field-bg);
   color: var(--field-text-color);
-  font-size: var(--primitive-fs-sm);
+  font-size: var(--text-sm);
   outline: 1px solid transparent;
   outline-offset: -1px;
   transition: var(--field-transition);
+}
+
+.field-input:hover {
+  border-color: var(--field-border-hover);
 }
 
 .field-input:focus {

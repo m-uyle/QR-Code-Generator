@@ -1,5 +1,4 @@
 export {
-  getMotionTokens,
   MAX_LOGO_BYTES,
   PNG_DPI,
   PNG_EXPORT_PX,

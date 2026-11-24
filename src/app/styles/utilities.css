@@ -24,10 +24,25 @@ html {
   text-size-adjust: 100%;
 }
 
-h1 {
+h1,
+.text-h1 {
   margin: 0;
-  font-size: inherit;
-  font-weight: inherit;
+  font-size: var(--heading-h1);
+  line-height: var(--lh-tight);
+}
+
+h2,
+.text-h2 {
+  margin: 0;
+  font-size: var(--heading-h2);
+  line-height: var(--lh-tight);
+}
+
+h3,
+.text-h3 {
+  margin: 0;
+  font-size: var(--heading-h3);
+  line-height: var(--lh-snug);
 }
 
 b,
@@ -131,12 +146,20 @@ img {
   right: var(--sp-1);
 }
 
+.right-2 {
+  right: var(--sp-2);
+}
+
 .right-5 {
-  right: var(--primitive-space-5);
+  right: var(--sp-5);
 }
 
 .top-5 {
-  top: var(--primitive-space-5);
+  top: var(--sp-5);
+}
+
+.z-20 {
+  z-index: var(--primitive-z-overlay);
 }
 
 .z-50 {
@@ -147,8 +170,16 @@ img {
   grid-column: span 3 / span 3;
 }
 
+.col-span-5 {
+  grid-column: span 5 / span 5;
+}
+
 .col-span-6 {
   grid-column: span 6 / span 6;
+}
+
+.col-span-7 {
+  grid-column: span 7 / span 7;
 }
 
 .block {
@@ -177,7 +208,7 @@ img {
 
 /* --- Sizing Utilities (Token-backed) --- */
 .h-1\.5 {
-  height: var(--primitive-space-1-5);
+  height: var(--size-dot);
 }
 
 .h-3 {
@@ -185,7 +216,7 @@ img {
 }
 
 .h-3\.5 {
-  height: var(--primitive-space-3-5);
+  height: var(--size-icon-sm);
 }
 
 .h-4 {
@@ -193,11 +224,11 @@ img {
 }
 
 .h-6 {
-  height: var(--sp-5);
+  height: var(--sp-6);
 }
 
 .h-7 {
-  height: var(--primitive-space-7);
+  height: var(--sp-7);
 }
 
 .h-8 {
@@ -225,7 +256,7 @@ img {
 }
 
 .w-1\.5 {
-  width: var(--primitive-space-1-5);
+  width: var(--size-dot);
 }
 
 .w-3 {
@@ -233,15 +264,23 @@ img {
 }
 
 .w-3\.5 {
-  width: var(--primitive-space-3-5);
+  width: var(--size-icon-sm);
 }
 
 .w-6 {
-  width: var(--sp-5);
+  width: var(--sp-6);
 }
 
 .w-7 {
-  width: var(--primitive-space-7);
+  width: var(--sp-7);
+}
+
+.w-8 {
+  width: var(--h-control);
+}
+
+.w-9 {
+  width: var(--h-export-btn);
 }
 
 .w-preview {
@@ -329,20 +368,12 @@ img {
   gap: var(--sp-1);
 }
 
-.gap-1\.5 {
-  gap: var(--primitive-space-1-5);
-}
-
 .gap-2 {
   gap: var(--sp-2);
 }
 
-.gap-2\.5 {
-  gap: var(--primitive-space-2-5);
-}
-
-.gap-3\.5 {
-  gap: var(--primitive-space-3-5);
+.gap-3 {
+  gap: var(--sp-3);
 }
 
 .gap-4 {
@@ -378,7 +409,7 @@ img {
 }
 
 .rounded-full {
-  border-radius: var(--r-3);
+  border-radius: var(--r-full);
 }
 
 .rounded-2xl {
@@ -494,18 +525,18 @@ img {
   stroke: var(--text-subtle);
 }
 
-/* --- Spacing Utilities (Token-backed) --- */
+/* --- Spacing Utilities (Token-backed — 4px Grid) --- */
 .p-6 {
-  padding: var(--sp-5);
+  padding: var(--sp-6);
 }
 
 .p-8 {
-  padding: var(--primitive-space-8);
+  padding: var(--sp-8);
 }
 
-.px-1\.5 {
-  padding-right: var(--primitive-space-1-5);
-  padding-left: var(--primitive-space-1-5);
+.px-1 {
+  padding-right: var(--sp-1);
+  padding-left: var(--sp-1);
 }
 
 .px-2 {
@@ -513,14 +544,9 @@ img {
   padding-left: var(--sp-2);
 }
 
-.px-2\.5 {
-  padding-right: var(--primitive-space-2-5);
-  padding-left: var(--primitive-space-2-5);
-}
-
 .px-6 {
-  padding-right: var(--sp-5);
-  padding-left: var(--sp-5);
+  padding-right: var(--sp-6);
+  padding-left: var(--sp-6);
 }
 
 .py-1 {
@@ -528,19 +554,24 @@ img {
   padding-bottom: var(--sp-1);
 }
 
-.pl-2\.5 {
-  padding-left: var(--primitive-space-2-5);
+.py-4 {
+  padding-top: var(--sp-4);
+  padding-bottom: var(--sp-4);
+}
+
+.pl-2 {
+  padding-left: var(--sp-2);
 }
 
 .pr-7 {
-  padding-right: var(--primitive-space-7);
+  padding-right: var(--sp-7);
 }
 
 .pt-3 {
   padding-top: var(--sp-3);
 }
 
-/* --- Typography & Ink Utilities (Deduplicated & Token-backed) --- */
+/* --- Typography & Ink Utilities (Deduplicated & Token-backed — Harmonic Major Third 1.250) --- */
 .text-center {
   text-align: center;
 }
@@ -549,21 +580,41 @@ img {
   font-family: var(--primitive-font-mono);
 }
 
-.text-micro {
-  font-size: var(--primitive-fs-2xs);
-}
-
-.text-caption {
-  font-size: var(--primitive-fs-xs);
-}
-
+.text-micro,
+.text-caption,
 .text-xs {
-  font-size: var(--primitive-fs-sm);
-  line-height: var(--sp-4);
+  font-size: var(--text-xs);
+  line-height: var(--lh-normal);
+}
+
+.text-sm {
+  font-size: var(--text-sm);
+  line-height: var(--lh-normal);
+}
+
+.text-base {
+  font-size: var(--text-base);
+  line-height: var(--lh-base);
+}
+
+.text-lg {
+  font-size: var(--text-lg);
+  line-height: var(--lh-snug);
+}
+
+.text-xl {
+  font-size: var(--text-xl);
+  line-height: var(--lh-tight);
+}
+
+.text-2xl {
+  font-size: var(--text-2xl);
+  line-height: var(--lh-tight);
 }
 
 .text-title {
-  font-size: var(--primitive-fs-lg);
+  font-size: var(--text-title);
+  line-height: var(--lh-none);
 }
 
 .font-medium {
@@ -571,15 +622,23 @@ img {
 }
 
 .leading-none {
-  line-height: var(--primitive-lh-none);
+  line-height: var(--lh-none);
 }
 
 .leading-tight {
-  line-height: var(--primitive-lh-tight);
+  line-height: var(--lh-tight);
 }
 
-.tracking-tight {
-  letter-spacing: var(--primitive-tracking-tight);
+.leading-snug {
+  line-height: var(--lh-snug);
+}
+
+.leading-normal {
+  line-height: var(--lh-normal);
+}
+
+.leading-base {
+  line-height: var(--lh-base);
 }
 
 .text-amber-800 {
@@ -625,9 +684,6 @@ img {
 }
 
 /* --- Shadow & Elevation Utilities (Token-backed) --- */
-.shadow-badge {
-  box-shadow: var(--badge-shadow);
-}
 
 .shadow-btn {
   box-shadow: var(--btn-primary-shadow);
@@ -645,19 +701,19 @@ img {
 
 /* --- Transitions & Switch Pseudo-element Utilities (Token-backed) --- */
 .transition-all {
-  transition: var(--transition-all-fast);
+  transition: none;
 }
 
 .transition-colors {
-  transition: var(--transition-colors);
+  transition: none;
 }
 
 .transition-transform {
-  transition: var(--transition-transform-fast);
+  transition: none;
 }
 
 .duration-200 {
-  transition-duration: var(--dur-base);
+  transition-duration: 0ms;
 }
 
 .after\:absolute::after {
@@ -666,8 +722,8 @@ img {
 }
 
 .after\:offset-knob::after {
-  top: var(--primitive-space-0-5);
-  left: var(--primitive-space-0-5);
+  top: var(--sp-0-5);
+  left: var(--sp-0-5);
   content: var(--tw-content);
 }
 
@@ -765,4 +821,24 @@ img {
 .peer:focus-visible ~ .peer-focus-visible\:ring-2,
 .peer:focus-visible ~ .peer-focus-visible\:ring-neutral-400 {
   box-shadow: var(--switch-focus-shadow);
+}
+
+.appearance-none {
+  appearance: none;
+}
+
+.focus-visible\:ring-2:focus-visible {
+  outline: 2px solid var(--border-focus-ring);
+  outline-offset: 1px;
+}
+
+.focus-visible\:ring-neutral-400:focus-visible {
+  outline-color: var(--border-focus-ring);
+}
+
+.btn-clear,
+.btn-icon-slot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }

@@ -12,31 +12,36 @@ const DATA_SVG_RE = /^data:image\/svg\+xml/iu;
 const QUOTE_RE = /"/gu;
 const STRIP_SVG_ATTRS = ["width", "height", "x", "y", "style", "class"];
 
-function emblemModules(N, size) {
+function emblemModules(N) {
   const odd = (x) => 2 * Math.round((x - 1) / 2) + 1;
-  const dense = N >= 45;
   const maxK = N - 16;
-  const kM = Math.min(maxK, Math.max(odd(N * 0.24), odd(N * 0.19) + 2));
-  const kL = Math.min(
-    maxK,
-    Math.max(odd(N * (dense ? 0.23 : 0.28)), kM + (dense ? 0 : 2))
-  );
-  const kS = Math.max(3, Math.min(odd(N * 0.19), kM - 2));
-  return { small: kS, medium: kM, large: kL }[size] || kM;
+  return Math.min(maxK, Math.max(odd(N * 0.24), odd(N * 0.19) + 2));
 }
 
-export function emblemCutout(N, size, shape) {
-  const k = emblemModules(N, size);
+export function emblemCutout(N, shape) {
+  const k = emblemModules(N);
   const circle = shape === "circle";
   const R = k / 2;
+  const cx = N / 2;
+  const cy = N / 2;
   const mid = (N - 1) / 2;
+
   return {
     k,
     circle,
     has(r, c) {
+      if (circle) {
+        // Module (r, c) occupies [c, c + 1] x [r, r + 1].
+        // Only mark cell as cleared if its ENTIRE bounding box is strictly within the circle.
+        // Boundary cells remain in the matrix grid so they connect to outer modules,
+        // and are then cleanly cut along the exact circle arc by the vector clip-path.
+        const maxDx = Math.max(Math.abs(c - cx), Math.abs(c + 1 - cx));
+        const maxDy = Math.max(Math.abs(r - cy), Math.abs(r + 1 - cy));
+        return maxDx * maxDx + maxDy * maxDy <= R * R;
+      }
       const dx = Math.max(Math.abs(c - mid) - 0.5, 0);
       const dy = Math.max(Math.abs(r - mid) - 0.5, 0);
-      return circle ? dx * dx + dy * dy < R * R : Math.max(dx, dy) < R;
+      return Math.max(dx, dy) < R;
     },
   };
 }

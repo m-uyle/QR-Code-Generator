@@ -6,20 +6,12 @@ import {
 import {
   initEmblemControls,
   setLogoFile,
-  updateSizeIcons,
 } from "../../../features/emblem-controls/index.js";
 import { initGeometryControls } from "../../../features/geometry-controls/index.js";
 import {
   initPayloadEditor,
   updateAccordionHeight,
 } from "../../../features/payload-editor/index.js";
-import {
-  drawQuietZone,
-  markStale,
-  paintMarginScrub,
-  qzActive,
-  renderQuietZoneTooltip,
-} from "../../../features/scan-health/index.js";
 import {
   historyInit,
   initStyleHistoryListeners,
@@ -33,6 +25,7 @@ import {
   updateAllPills,
 } from "../../../shared/ui/segmented-control/index.js";
 import { renderToastContainer } from "../../../shared/ui/toast/index.js";
+import { initTooltip } from "../../../shared/ui/tooltip/index.js";
 import {
   renderGeneratorControlsWidget,
   syncAllUIControls,
@@ -46,18 +39,15 @@ import {
 function renderQrStudioPage() {
   return `
     ${renderToastContainer()}
-    <main id="studio-window" class="w-studio surface-panel border border-neutral-200 rounded-2xl shadow-studio overflow-hidden flex flex-col">
-      <div class="grid grid-cols-2 divide-x divide-neutral-200 items-stretch">
-        ${renderGeneratorControlsWidget()}
-        ${renderPreviewStageWidget()}
-      </div>
+    <main id="studio-window" class="w-studio surface-panel overflow-hidden flex flex-col">
+      ${renderPreviewStageWidget()}
+      ${renderGeneratorControlsWidget()}
     </main>
-    ${renderQuietZoneTooltip()}
   `;
 }
 
 function updateContainerWidth() {
-  const multiFieldTypes = ["email", "sms", "wifi", "vcard", "geo", "sbp"];
+  const multiFieldTypes = ["email", "sms", "wifi", "vcard", "geo"];
   const isMulti = multiFieldTypes.includes(state.contentType);
   const win = document.querySelector("#studio-window");
   if (!win) {
@@ -75,7 +65,10 @@ export function initQrStudioPage() {
   pageAbortController = new AbortController();
   const options = { signal: pageAbortController.signal };
 
-  if (!document.querySelector("#studio-window")) {
+  const appEl = document.querySelector("#app");
+  if (appEl) {
+    appEl.innerHTML = renderQrStudioPage();
+  } else if (!document.querySelector("#studio-window")) {
     document.body.insertAdjacentHTML("afterbegin", renderQrStudioPage());
   }
 
@@ -96,13 +89,6 @@ export function initQrStudioPage() {
     onUpdateContainerWidth: updateContainerWidth,
     onRenderQR: renderQR,
     onSetLogoFile: setLogoFile,
-    onMarkStale: markStale,
-    onDrawQuietZone: (m) => {
-      if (qzActive) {
-        drawQuietZone(m);
-      }
-    },
-    onPaintMargin: paintMarginScrub,
   };
 
   initPayloadEditor(callbacks, options);
@@ -110,6 +96,7 @@ export function initQrStudioPage() {
   initEmblemControls(callbacks, options);
   initPreviewStage(options);
   initStyleHistoryListeners(callbacks, options);
+  initTooltip(options);
 
   window.addEventListener(
     "resize",
@@ -135,7 +122,6 @@ export function initQrStudioPage() {
   window.addEventListener("pagehide", destroyQrStudioPage, options);
 
   historyInit();
-  updateSizeIcons();
   updateContainerWidth();
   updateAccordionHeight();
   renderQR();

@@ -4,10 +4,6 @@ import { defaultState, STATE_ENUMS } from "./constants.js";
 
 export let state = { ...defaultState };
 
-export function replaceState(nextState) {
-  state = { ...nextState };
-}
-
 export function withState(overrides, fn) {
   const saved = state;
   state = { ...state, ...overrides };
@@ -18,7 +14,51 @@ export function withState(overrides, fn) {
   }
 }
 
+export function applyStylePreset(styleMode) {
+  state.codeStyle = styleMode === "rounded" ? "rounded" : "classic";
+  if (state.codeStyle === "rounded") {
+    state.moduleShape = "soft";
+    state.moduleRadius = 65;
+    if (state.eyeChoice === "default") {
+      state.eyeShape = "rounded";
+    }
+  } else {
+    state.moduleShape = "square";
+    state.moduleRadius = 0;
+    if (state.eyeChoice === "default") {
+      state.eyeShape = "square";
+    }
+  }
+}
+
+export function applyEyeChoice(choice) {
+  state.eyeChoice = choice;
+  if (choice === "default") {
+    state.eyeShape = state.codeStyle === "rounded" ? "rounded" : "square";
+  } else {
+    state.eyeShape = choice;
+  }
+}
+
 function sanitizeState() {
+  if (!STATE_ENUMS.codeStyle.includes(state.codeStyle)) {
+    state.codeStyle =
+      state.moduleShape === "soft" || state.moduleRadius > 30
+        ? "rounded"
+        : "classic";
+  }
+  if (!STATE_ENUMS.eyeChoice.includes(state.eyeChoice)) {
+    if (state.eyeShape === "circle") {
+      state.eyeChoice = "circle";
+    } else if (state.eyeShape === "leaf") {
+      state.eyeChoice = "leaf";
+    } else {
+      state.eyeChoice = "default";
+    }
+  }
+  applyStylePreset(state.codeStyle);
+  applyEyeChoice(state.eyeChoice);
+
   for (const [k, list] of Object.entries(STATE_ENUMS)) {
     if (!list.includes(state[k])) {
       state[k] = defaultState[k];
@@ -56,9 +96,6 @@ const PAYLOAD_FIELD_MAP = [
   ["geoLat", "geo-lat"],
   ["geoLng", "geo-lng"],
   ["geoFormat", "geo-format", "maps"],
-  ["sbpLink", "sbp-link"],
-  ["sbpAmount", "sbp-amount"],
-  ["sbpDesc", "sbp-desc"],
 ];
 
 function getPayloadValuesFromDom() {
@@ -70,7 +107,7 @@ function getPayloadValuesFromDom() {
   return values;
 }
 
-export function saveState() {
+function saveState() {
   try {
     const payloadValues = getPayloadValuesFromDom();
     const { customLogoUrl: _customLogoUrl, ...persistedState } = state;

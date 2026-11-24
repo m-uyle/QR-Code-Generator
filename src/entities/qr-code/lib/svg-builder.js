@@ -6,7 +6,7 @@ import {
   ensureUtf8Support,
   getQrEngine,
 } from "../../../shared/lib/qrcode-engine.js";
-import { setOdometer } from "../../../shared/ui/odometer/index.js";
+import { getAutoEcc, getAutoMargin } from "../model/auto-params.js";
 import { getPayload, pickMode } from "../model/payload.js";
 import { state } from "../model/store.js";
 import { emblemCutout, emblemInner, getEmblemUrl } from "./emblem.js";
@@ -82,9 +82,9 @@ function buildModulesCompoundPath(qr, N, margin, radiusRatio, isCleared) {
   return compoundPath;
 }
 
-function buildEmblemMarkup(hasLogo, cut, cx, cy) {
+function buildEmblemMarkup(hasLogo, cut, cx, cy, qrDim) {
   if (!(hasLogo && cut)) {
-    return { defs: "", emblem: "" };
+    return { defs: "", emblem: "", matrixClipAttr: "" };
   }
   const innerSize = Number(
     Math.max(1, cut.k - (cut.circle ? 0.6 : 0.9)).toFixed(2)
@@ -99,17 +99,37 @@ function buildEmblemMarkup(hasLogo, cut, cx, cy) {
   const innerX = Number((cx - innerSize / 2).toFixed(3));
   const innerY = Number((cy - innerSize / 2).toFixed(3));
 
-  const defs = `<defs><clipPath id="badge-logo-clip" clipPathUnits="userSpaceOnUse"><path d="${logoClipPath}" /></clipPath></defs>`;
+  const cutoutPath = cut.circle
+    ? pCircle(cx, cy, cut.k / 2)
+    : getBadgePath(cx, cy, cut.k, state.logoBadgeShape, state.moduleRadius);
+
+  const defs = `
+    <defs>
+      <clipPath id="qr-cutout-clip" clipPathUnits="userSpaceOnUse">
+        <path clip-rule="evenodd" d="M -10 -10 H ${qrDim + 20} V ${qrDim + 20} H -10 Z ${cutoutPath}" />
+      </clipPath>
+      <clipPath id="badge-logo-clip" clipPathUnits="userSpaceOnUse">
+        <path d="${logoClipPath}" />
+      </clipPath>
+    </defs>
+  `;
   const emblem = `<g id="qr-logo" clip-path="url(#badge-logo-clip)">${emblemInner(innerX, innerY, innerSize)}</g>`;
-  return { defs, emblem };
+  return {
+    defs,
+    emblem,
+    matrixClipAttr: ' clip-path="url(#qr-cutout-clip)"',
+  };
 }
 
-export function buildSvg(quiet = false, onMatrixUpdate = null) {
+export function buildSvg() {
   ensureUtf8Support();
   const payload = getPayload();
   if (!payload) {
     return "EMPTY";
   }
+
+  const hasLogo = Boolean(getEmblemUrl());
+  state.eccLevel = getAutoEcc(payload, hasLogo);
 
   const qr = generateQrMatrix(payload, state.eccLevel);
   if (!qr) {
@@ -117,23 +137,15 @@ export function buildSvg(quiet = false, onMatrixUpdate = null) {
   }
 
   const N = qr.getModuleCount();
+  state.margin = getAutoMargin(N, payload.length);
   const margin = Math.max(0, Number(state.margin) || 0);
   const qrDim = N + margin * 2;
-  const elMatrixInfo = document.querySelector("#matrix-info");
-  setOdometer(elMatrixInfo, `${N} × ${N}`);
 
-  if (!quiet && onMatrixUpdate) {
-    onMatrixUpdate(N, false);
-  }
-
-  const hasLogo = Boolean(getEmblemUrl());
   const cx = margin + N / 2.0;
   const cy = margin + N / 2.0;
 
   const radiusRatio = (state.moduleRadius / 100) * 0.4;
-  const cut = hasLogo
-    ? emblemCutout(N, state.iconSize, state.logoBadgeShape)
-    : null;
+  const cut = hasLogo ? emblemCutout(N, state.logoBadgeShape) : null;
   const isCleared = cut ? cut.has : () => false;
 
   const compoundPath = buildModulesCompoundPath(
@@ -144,7 +156,13 @@ export function buildSvg(quiet = false, onMatrixUpdate = null) {
     isCleared
   );
 
-  const { defs, emblem } = buildEmblemMarkup(hasLogo, cut, cx, cy);
+  const { defs, emblem, matrixClipAttr } = buildEmblemMarkup(
+    hasLogo,
+    cut,
+    cx,
+    cy,
+    qrDim
+  );
 
   const bgR = bgCornerRadius(qrDim, margin);
   const bgRect = state.isTransparent
@@ -156,7 +174,7 @@ export function buildSvg(quiet = false, onMatrixUpdate = null) {
       ${defs}
       <g id="qr-code">
         ${bgRect}
-        <path id="qr-matrix" d="${compoundPath}" fill="${QR_VECTOR_TOKENS.moduleFill}" fill-rule="evenodd" />
+        <path id="qr-matrix"${matrixClipAttr} d="${compoundPath}" fill="${QR_VECTOR_TOKENS.moduleFill}" fill-rule="evenodd" />
         ${emblem}
       </g>
     </svg>

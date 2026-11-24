@@ -13,14 +13,12 @@
   transform: var(--btn-tactile-active-transform);
 }
 
-.btn-reset-icon,
 .btn-icon-tactile {
   cursor: pointer;
   transition: var(--btn-icon-transition);
   user-select: none;
 }
 
-.btn-reset-icon:active,
 .btn-icon-tactile:active {
   transform: var(--btn-icon-active-transform);
 }
@@ -36,8 +34,13 @@
 
 @media (prefers-reduced-motion: reduce) {
   .btn-tactile,
-  .btn-reset-icon,
   .btn-icon-tactile {
     transition: none;
+  }
+
+  .btn-tactile:hover,
+  .btn-tactile:active,
+  .btn-icon-tactile:active {
+    transform: none;
   }
 }

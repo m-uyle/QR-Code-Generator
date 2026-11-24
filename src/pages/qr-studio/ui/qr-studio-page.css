@@ -1,11 +1,22 @@
-/* Studio Window Container & Dynamic Width Transition */
+/* Studio Window Container & Viewport-Adaptive Sizing */
+body {
+  display: flex;
+  min-height: 100dvh;
+  align-items: safe center;
+  justify-content: center;
+  padding: var(--page-padding);
+  box-sizing: border-box;
+}
+
 #studio-window {
+  container: studio / inline-size;
   width: min(100%, var(--studio-current-width, var(--studio-width-compact)));
   max-width: 100%;
-  border-color: var(--studio-border);
+  margin: auto;
+  border: none;
   border-radius: var(--studio-radius);
   background-color: var(--studio-bg);
-  box-shadow: var(--studio-shadow);
+  box-shadow: none;
   transition: var(--studio-transition);
 }
 
@@ -13,37 +24,27 @@
   --studio-current-width: var(--studio-width-expanded);
 }
 
-@media (width <= 860px) {
-  body {
-    padding: var(--primitive-space-3);
-  }
+.studio-header {
+  padding-right: var(--studio-padding);
+  padding-left: var(--studio-padding);
+}
 
+.studio-section {
+  padding: var(--section-padding-y) var(--studio-padding);
+}
+
+.preview-stage-box {
+  padding: var(--preview-padding);
+}
+
+.qr-export-box {
+  padding: var(--export-padding);
+}
+
+@media (width <= 53.75rem) {
   #studio-window {
     width: 100%;
-    border-radius: var(--r-3);
-  }
-
-  #studio-window > .grid-cols-2 {
-    border-top-width: 0;
-    grid-template-columns: 1fr;
-  }
-
-  #studio-window > .grid-cols-2 > section:first-child {
-    border-right: none;
-    border-bottom: 1px solid var(--border-default);
-  }
-}
-
-@media (width <= 480px) {
-  body {
-    padding: var(--primitive-space-2);
-  }
-}
-
-@media (height <= 520px) {
-  body {
-    align-items: flex-start;
-    padding: var(--primitive-space-1);
+    border-radius: var(--studio-radius);
   }
 }
 

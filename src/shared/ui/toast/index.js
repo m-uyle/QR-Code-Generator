@@ -1,5 +1,1 @@
-export {
-  renderToastContainer,
-  showToast,
-  showUndoToast,
-} from "./toast.js";
+export { renderToastContainer, showToast } from "./toast.js";

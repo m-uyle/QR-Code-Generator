@@ -12,7 +12,6 @@ const PROTO_SCHEME_RE =
   /^(?:[a-z][a-z0-9+.-]*:\/\/|(?:(?:mailto|tel|sms|smsto|geo|wifi|bitcoin):))/iu;
 const TEL_CLEAN_RE = /[^\d+*#]/gu;
 const VCARD_WEB_PROTO_RE = /^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//iu;
-const HTTP_PREFIX_RE = /^https?:\/\//iu;
 const WWW_PREFIX_RE = /^www\./u;
 const NON_ALPHANUM_UNICODE_RE = /[^\p{L}\p{N}]+/gu;
 const LEADING_TRAILING_DASH_RE = /^-+|-+$/gu;
@@ -171,37 +170,6 @@ function getGeoPayload() {
     : `geo:${coords}`;
 }
 
-function getSbpPayload() {
-  const rawLink = getVal("sbp-link");
-  if (!rawLink) {
-    return "";
-  }
-  const rawAmount = getVal("sbp-amount");
-  const desc = getVal("sbp-desc");
-
-  try {
-    if (HTTP_PREFIX_RE.test(rawLink)) {
-      const u = new URL(rawLink);
-      if (rawAmount) {
-        const cleanAmount = rawAmount.replace(",", ".");
-        const parsedAmount = Number.parseFloat(cleanAmount);
-        if (!Number.isNaN(parsedAmount) && parsedAmount > 0) {
-          u.searchParams.set("sum", String(Math.round(parsedAmount * 100)));
-          u.searchParams.set("cur", "RUB");
-        }
-      }
-      if (desc) {
-        u.searchParams.set("desc", desc);
-      }
-      return u.toString();
-    }
-  } catch {
-    // Ignore URL parse error
-  }
-
-  return rawLink;
-}
-
 const PAYLOAD_BUILDERS = {
   url: getUrlPayload,
   tel: getTelPayload,
@@ -211,7 +179,6 @@ const PAYLOAD_BUILDERS = {
   text: getTextPayload,
   vcard: getVcardPayload,
   geo: getGeoPayload,
-  sbp: getSbpPayload,
 };
 
 export function getPayload() {
@@ -235,7 +202,6 @@ export function fileBase() {
           [getVal("vcard-fn"), getVal("vcard-ln")].join(" ").trim() ||
           getVal("vcard-org"),
         geo: () => `${getVal("geo-lat")} ${getVal("geo-lng")}`,
-        sbp: () => getVal("sbp-amount"),
       }[t]() || "";
   } catch {
     // Ignore URL parse error in hint

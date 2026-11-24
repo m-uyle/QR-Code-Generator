@@ -1,7 +1,7 @@
 {
-  "name": "QR Studio — Professional Client-Side QR Code Generator",
-  "short_name": "QR Studio",
-  "description": "Client-side vector and raster QR code generator with real-time scan verification, custom geometry, emblems, and zero tracking.",
+  "name": "QR Code Generator",
+  "short_name": "QR Code Generator",
+  "description": "Client-side vector and raster QR code generator with custom geometry, emblems, and zero tracking.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

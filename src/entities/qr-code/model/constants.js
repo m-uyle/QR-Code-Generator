@@ -1,6 +1,8 @@
 export const defaultState = {
   contentType: "url",
   isTransparent: false,
+  codeStyle: "classic",
+  eyeChoice: "default",
   eyeShape: "square",
   moduleShape: "square",
   moduleRadius: 0,
@@ -13,25 +15,15 @@ export const defaultState = {
 };
 
 export const STATE_ENUMS = {
+  codeStyle: ["classic", "rounded"],
+  eyeChoice: ["default", "circle", "leaf"],
   moduleShape: ["square", "soft", "dots"],
   eyeShape: ["square", "rounded", "circle", "leaf"],
   eccLevel: ["L", "M", "Q", "H"],
   logoBadgeShape: ["square", "circle"],
   iconSize: ["small", "medium", "large"],
-  contentType: [
-    "url",
-    "tel",
-    "wifi",
-    "email",
-    "sms",
-    "text",
-    "vcard",
-    "geo",
-    "sbp",
-  ],
+  contentType: ["url", "tel", "wifi", "email", "sms", "text", "vcard", "geo"],
 };
-
-export const ECC_RECOVERY = { L: 7, M: 15, Q: 25, H: 30 };
 
 export const TYPE_ICONS = {
   url: '<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
@@ -44,10 +36,11 @@ export const TYPE_ICONS = {
   vcard:
     '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
   geo: '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>',
-  sbp: '<text x="12" y="18.5" font-size="19" font-weight="700" text-anchor="middle" fill="currentColor" stroke="none" font-family="Arial,Helvetica,sans-serif">&#8381;</text>',
 };
 
 export const STYLE_KEYS = [
+  "codeStyle",
+  "eyeChoice",
   "moduleShape",
   "eyeShape",
   "moduleRadius",
@@ -61,6 +54,8 @@ export const STYLE_KEYS = [
 ];
 
 export const STYLE_LABELS = {
+  codeStyle: "geometry style",
+  eyeChoice: "corner eyes",
   moduleShape: "module style",
   eyeShape: "corner eyes",
   moduleRadius: "smoothness",
@@ -71,13 +66,4 @@ export const STYLE_LABELS = {
   builtinIcon: "type icon",
   isTransparent: "transparency",
   customLogoUrl: "emblem",
-};
-
-export const PLAIN_STYLE = {
-  moduleShape: "square",
-  eyeShape: "square",
-  moduleRadius: 0,
-  builtinIcon: false,
-  customLogoUrl: null,
-  isTransparent: false,
 };

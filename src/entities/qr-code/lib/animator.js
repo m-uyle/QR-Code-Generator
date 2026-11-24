@@ -1,4 +1,3 @@
-import { getMotionTokens } from "../../../shared/config/index.js";
 import { state, withState } from "../model/store.js";
 import { bgCornerRadius, eyeRadii, lerpEye, setEyeBlend } from "./geometry.js";
 import { buildSvg } from "./svg-builder.js";
@@ -29,14 +28,9 @@ export let renderMemo = null;
 
 /** @type {AnimationState|null} */
 export let anim = null;
-let scrubHold = false;
 
 export function setRenderMemo(val) {
   renderMemo = val;
-}
-
-export function setScrubHold(val) {
-  scrubHold = val;
 }
 
 export function cancelActiveAnim() {
@@ -80,7 +74,7 @@ function retargetEye() {
   anim.eyeTarget = state.eyeShape;
 }
 
-function paintFrame(onDrawQuietZone) {
+function paintFrame() {
   if (!anim) {
     return;
   }
@@ -88,7 +82,7 @@ function paintFrame(onDrawQuietZone) {
   setEyeBlend(anim.eye && anim.eye.t < 1 ? anim.eye : null);
   try {
     withState({ moduleRadius: anim.r, margin: anim.m }, () => {
-      const svg = buildSvg(true);
+      const svg = buildSvg();
       if (svg && svg !== "EMPTY") {
         if (elQrContainer) {
           elQrContainer.innerHTML = svg;
@@ -98,9 +92,6 @@ function paintFrame(onDrawQuietZone) {
     });
   } finally {
     setEyeBlend(null);
-  }
-  if (onDrawQuietZone) {
-    onDrawQuietZone(anim.m);
   }
 }
 
@@ -136,11 +127,10 @@ function updateAnimEye(dt, duration) {
   return anim.eye.t >= 1;
 }
 
-export function startAnim(onSettled, onDrawQuietZone) {
+export function startAnim(onSettled) {
   if (!renderMemo) {
     return false;
   }
-  const MOTION = getMotionTokens();
   if (!anim) {
     anim = {
       r: renderMemo.radius,
@@ -159,26 +149,28 @@ export function startAnim(onSettled, onDrawQuietZone) {
     retargetEye();
   }
 
+  const baseDur = 220; // preserve fluid QR preview module morphing
+
   const step = (now) => {
     if (!anim) {
       return;
     }
     const dt = Math.min(64, now - anim.last);
     anim.last = now;
-    const k = 1 - Math.exp(-dt / (MOTION.base / 3));
+    const k = 1 - Math.exp(-dt / (baseDur / 3));
 
     const doneRadiusAndMargin = updateAnimRadius(k);
-    const doneE = updateAnimEye(dt, MOTION.base);
+    const doneE = updateAnimEye(dt, baseDur);
 
     const et = anim.eye ? anim.eye.t : 1;
     if (anim.r !== anim.pr || anim.m !== anim.pm || et !== anim.pe) {
-      paintFrame(onDrawQuietZone);
+      paintFrame();
       anim.pr = anim.r;
       anim.pm = anim.m;
       anim.pe = et;
     }
 
-    if (doneRadiusAndMargin && doneE && !scrubHold) {
+    if (doneRadiusAndMargin && doneE) {
       anim = null;
       renderMemo.radius = state.moduleRadius;
       renderMemo.margin = state.margin;

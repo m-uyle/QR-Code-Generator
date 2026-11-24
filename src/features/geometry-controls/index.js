@@ -1,5 +1,5 @@
 export {
   initGeometryControls,
   renderGeometryControls,
-  syncSmoothSlider,
+  syncStyleControls,
 } from "./ui/GeometryControls.js";

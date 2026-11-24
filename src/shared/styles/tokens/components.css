@@ -3,41 +3,57 @@
  * Scoped tokens for every UI component, including shadows, transitions, and transforms.
  */
 :root {
-  /* --- 1. Studio Window --- */
-  --studio-width-compact: 820px;
-  --studio-width-expanded: 890px;
+  /* --- 1. Studio Window (Vertical Single-Column Composition) --- */
+  --studio-width-compact: 26rem;
+  --studio-width-expanded: 26rem;
   --studio-bg: var(--surface-panel);
-  --studio-border: var(--border-default);
-  --studio-radius: var(--r-4);
-  --studio-shadow: var(--elevation-lg);
-  --studio-transition: width var(--dur-base) var(--ease-inout);
+  --studio-border: var(--border-transparent);
+  --studio-padding: clamp(var(--sp-3), 2.5dvh, var(--sp-6));
+  --export-padding: var(--studio-padding);
+  --export-padding-y: var(--export-padding);
+  --preview-size: clamp(14rem, calc(100dvh - 33.5rem), 23rem);
+  --preview-padding: clamp(var(--sp-3), 2dvh, var(--sp-6));
+  --section-padding-y: clamp(var(--sp-2), 1.5dvh, var(--sp-4));
+  --page-padding: var(--sp-2);
+  --export-btn-radius: var(--radius-base);
+
+  /* Concentric Studio Window Radius: R_window = R_export_btn + P_studio */
+  --studio-radius: calc(var(--export-btn-radius) + var(--studio-padding));
+  --studio-shadow: none;
+  --studio-transition: none;
 
   /* --- 2. Segmented Control --- */
-  --segmented-bg: var(--surface-control);
-  --segmented-padding: var(--primitive-space-0-75);
-  --segmented-gap: var(--primitive-space-0-75);
-  --segmented-radius: var(--r-2);
+  --segmented-border-width: var(--border-width-default);
+  --segmented-border-color: var(--border-default);
+  --segmented-border: var(--segmented-border-width) solid
+    var(--segmented-border-color);
+  --segmented-border-hover: var(--border-strong);
+  --segmented-bg: var(--surface-transparent);
+  --segmented-padding: 0px;
+  --segmented-gap: 0px;
+  --segmented-radius: var(--radius-base);
   --segmented-height: var(--h-control);
   --segmented-pill-bg: var(--surface-pill);
-  --segmented-pill-radius: var(--r-1);
-  --segmented-pill-shadow: var(--elevation-pill);
-  --segmented-pill-transition:
-    transform var(--dur-base) var(--ease-out),
-    width var(--dur-base) var(--ease-out),
-    opacity var(--dur-fast) var(--ease-out);
+  --segmented-pill-radius: var(--segmented-radius);
+  --segmented-pill-shadow: none;
+  --segmented-pill-transition: none;
   --segmented-item-color: var(--text-muted);
   --segmented-item-active-color: var(--text-primary);
-  --segmented-item-transition: color var(--dur-fast) var(--ease-out);
+  --segmented-item-transition: none;
 
   /* --- 3. Scrubber (Smoothness & Quiet Zone) --- */
   --scrubber-height: var(--h-control);
   --scrubber-bg: var(--surface-control);
-  --scrubber-radius: var(--r-2);
+  --scrubber-radius: var(--radius-base);
   --scrubber-padding-x: var(--sp-3);
+  --scrubber-padding: var(--sp-0-5);
   --scrubber-fill-bg: var(--surface-pill);
-  --scrubber-fill-radius: var(--r-1);
+  --scrubber-fill-radius: max(
+    0px,
+    calc(var(--scrubber-radius) - var(--scrubber-padding))
+  );
   --scrubber-fill-shadow: var(--elevation-pill);
-  --scrubber-fill-transition: width var(--dur-base) var(--ease-out);
+  --scrubber-fill-transition: var(--transition-none);
   --scrubber-handle-color: var(--text-muted);
   --scrubber-handle-active-color: var(--text-primary);
   --scrubber-handle-transition:
@@ -45,107 +61,90 @@
     background-color var(--dur-fast) var(--ease-out);
   --scrubber-tick-color: var(--primitive-alpha-white-10);
   --scrubber-rec-dot-color: var(--status-warning-accent);
-  --scrubber-input-width: 44px;
-  --scrubber-input-height: 22px;
+  --scrubber-input-width: 2.75rem;
+  --scrubber-input-height: 1.375rem;
   --scrubber-input-bg: var(--surface-page);
   --scrubber-input-border: var(--border-active);
 
   /* --- 4. Payload Accordion & Form Fields --- */
-  --accordion-transition: height var(--dur-base) var(--ease-out);
-  --field-swap-transition:
-    opacity var(--dur-fast) var(--ease-out),
-    transform var(--dur-fast) var(--ease-out);
-  --field-leaving-transform: translateY(-4px);
+  --accordion-transition: none;
+  --field-swap-transition: none;
+  --field-leaving-transform: none;
   --field-height: var(--h-control);
-  --field-bg: var(--surface-control);
-  --field-bg-hover: var(--surface-control-hover);
-  --field-bg-focus: var(--surface-panel);
+  --field-border-width: var(--border-width-default);
+  --field-border-color: var(--border-default);
+  --field-border: var(--field-border-width) solid var(--field-border-color);
+  --field-border-hover: var(--border-strong);
   --field-border-focus: var(--border-active);
   --field-border-group-focus: var(--border-strong);
-  --field-radius: var(--r-2);
+  --field-bg: var(--surface-transparent);
+  --field-bg-hover: var(--surface-transparent);
+  --field-bg-focus: var(--surface-transparent);
+  --field-radius: var(--radius-base);
   --field-text-color: var(--text-primary);
   --field-placeholder-color: var(--text-subtle);
   --field-focus-shadow: var(--elevation-focus-field);
-  --field-transition: var(--transition-field);
+  --field-transition: none;
 
   /* --- 5. Toggle Switch --- */
-  --switch-width: var(--primitive-space-7);
-  --switch-height: var(--primitive-space-4);
+  --switch-width: var(--sp-7);
+  --switch-height: var(--sp-4);
   --switch-bg: var(--border-default);
   --switch-bg-checked: var(--text-primary);
-  --switch-thumb-size: var(--primitive-space-3);
+  --switch-thumb-size: var(--sp-3);
   --switch-thumb-bg: var(--surface-panel);
   --switch-thumb-shadow: var(--elevation-xs);
-  --switch-radius: var(--r-2);
-  --switch-thumb-radius: var(--r-1);
+  --switch-radius: var(--r-full);
+  --switch-padding: var(--sp-0-5);
+  --switch-thumb-radius: var(--r-full);
+  --switch-transition: none;
   --switch-focus-shadow: var(--elevation-focus-switch);
 
   /* --- 6. Center Emblem Dropzone --- */
+  --dropzone-radius: var(--radius-base);
   --dropzone-dragover-bg: var(--surface-control-active);
   --dropzone-dragover-border: var(--border-focus-solid);
   --dropzone-dragover-shadow: var(--elevation-dropzone);
-  --dropzone-dragover-transform: translateY(-1.5px) scale(1.02);
+  --dropzone-dragover-transform: none;
 
   /* --- 7. Preview Stage, 3D Tilt Card & Contact Shadow --- */
-  --preview-size: 340px;
-  --preview-perspective: 1000px;
-  --preview-placeholder-bg: var(--surface-panel);
-  --preview-card-filter: drop-shadow(
-      0 20px 21px var(--primitive-alpha-black-12)
-    )
-    drop-shadow(0 3px 6px var(--primitive-alpha-black-04))
-    drop-shadow(0 0 0.6px var(--primitive-alpha-black-35));
-  --preview-qz-color: var(--status-danger-accent);
-  --preview-checker-size: 16px;
-  --qr-output-min-size: 280px;
-  --contact-shadow-width: 292px;
-  --contact-shadow-height: 30px;
-  --contact-shadow-offset-y: 158px;
-  --contact-shadow-blur: 6px;
-  --contact-shadow-bg: radial-gradient(
-    ellipse at center,
-    var(--primitive-alpha-black-55) 0%,
-    var(--primitive-alpha-black-30) 46%,
-    var(--primitive-alpha-black-00) 74%
+  --card-radius: var(--r-3);
+  --drop-hint-inset: var(--sp-2);
+  --drop-hint-radius: max(
+    0px,
+    calc(var(--card-radius) - var(--drop-hint-inset))
   );
-  --contact-shadow-transition:
-    transform var(--dur-slow) var(--ease-out),
-    opacity var(--dur-slow) var(--ease-out);
-  --contact-shadow-hover-transform: translateX(-50%) scale(0.9, 0.82);
+  --preview-perspective: 62.5rem;
+  --preview-placeholder-bg: var(--surface-panel);
+  --preview-card-filter: none;
+  --preview-checker-size: 1rem;
+  --qr-output-min-size: 100%;
+  --contact-shadow-width: 0;
+  --contact-shadow-height: 0;
+  --contact-shadow-offset-y: 0;
+  --contact-shadow-blur: 0;
+  --contact-shadow-bg: var(--surface-transparent);
+  --contact-shadow-transition: none;
+  --contact-shadow-hover-transform: none;
 
-  /* --- 8. Health Badge, Scan Popover & Tooltip --- */
-  --badge-shadow: var(--elevation-xs);
-  --popover-width: 304px;
-  --popover-max-height: min(80vh, 540px);
-  --popover-bg: var(--surface-popover);
-  --popover-border: var(--border-default);
-  --popover-shadow: var(--elevation-lg);
-  --popover-blur: 14px;
-  --popover-hidden-transform: translateY(-6px) scale(0.97);
-  --popover-transition-close:
-    opacity var(--dur-fast) var(--ease-out),
-    transform var(--dur-base) var(--ease-spring),
-    visibility 0s linear var(--dur-base);
-  --popover-transition-open:
-    opacity var(--dur-fast) var(--ease-out),
-    transform var(--dur-base) var(--ease-spring), visibility 0s linear 0s;
-  --tooltip-bg: var(--surface-tooltip);
-  --tooltip-border: var(--border-default);
-  --tooltip-shadow: var(--elevation-md);
-  --tooltip-hidden-transform: translateY(-4px) scale(0.96);
-
-  /* --- 9. Tactile & Export Buttons --- */
-  --btn-tactile-transition: var(--transition-tactile);
-  --btn-tactile-hover-transform: var(--transform-tactile-hover);
-  --btn-tactile-active-transform: var(--transform-tactile-active);
-  --btn-icon-transition: var(--transition-icon-tactile);
+  /* --- 8. Tactile & Export Buttons --- */
+  --btn-tactile-transition: none;
+  --btn-tactile-hover-transform: none;
+  --btn-tactile-active-transform: none;
+  --btn-icon-transition: none;
   --btn-icon-active-transform: var(--transform-icon-active);
   --btn-primary-shadow: var(--elevation-xs);
   --btn-success-bg: var(--status-success-bg);
   --btn-success-border: var(--status-success-border);
   --btn-success-text: var(--status-success-text);
 
-  /* --- 10. Toast & Undo Toast --- */
+  /* --- 10. Toast Notification --- */
+  --toast-radius: var(--r-3);
+  --toast-padding: var(--sp-2);
+  --toast-inner-radius: max(
+    0px,
+    calc(var(--toast-radius) - var(--toast-padding))
+  );
   --toast-bg: var(--surface-toast);
   --toast-border: var(--border-default);
   --toast-text: var(--text-primary);
@@ -153,18 +152,7 @@
   --toast-transition:
     opacity var(--dur-base) var(--ease-out),
     transform var(--dur-base) var(--ease-out);
-  --toast-leaving-transform: translateY(-4px);
-  --undo-hidden-transform: translateY(6px);
-  --undo-transition:
-    opacity var(--dur-fast) var(--ease-out),
-    transform var(--dur-base) var(--ease-spring);
-  --undo-btn-bg: var(--primitive-alpha-white-16);
-  --undo-btn-bg-hover: var(--primitive-alpha-white-28);
-  --undo-bar-bg: linear-gradient(
-    90deg,
-    var(--primitive-alpha-white-60),
-    var(--primitive-alpha-white-16)
-  );
+  --toast-leaving-transform: translateY(-0.25rem);
 
   /* --- 11. Scrollbars --- */
   --scrollbar-thumb: var(--primitive-graphite-550);

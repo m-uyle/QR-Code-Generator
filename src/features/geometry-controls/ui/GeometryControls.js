@@ -1,269 +1,217 @@
 import {
   anim,
-  defaultState,
+  applyEyeChoice,
+  applyStylePreset,
   renderMemo,
-  setScrubHold,
   startAnim,
   state,
 } from "../../../entities/qr-code/index.js";
 import { reducedMotion } from "../../../shared/config/index.js";
 import {
-  makeScrubber,
-  paintScrubEl,
-} from "../../../shared/ui/scrubber/index.js";
-import { bindSegmentedGroup } from "../../../shared/ui/segmented-control/index.js";
+  bindSegmentedGroup,
+  updatePillPosition,
+} from "../../../shared/ui/segmented-control/index.js";
 import { showToast } from "../../../shared/ui/toast/index.js";
 
 let cbRenderQR = () => undefined;
-let cbMarkStale;
-let cbDrawQuietZone;
-let cbPaintMargin;
 
 export function renderGeometryControls() {
-  return `        <!-- SECTION 2: Geometry & Parameters -->
-        <div class="pt-3 border-t border-neutral-200 flex flex-col gap-2.5">
+  return `        <!-- SECTION 2: Style & Corners -->
+        <div class="studio-section border-b border-neutral-200 flex flex-col gap-2">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-medium text-neutral-700">Geometry</span>
+            <span class="text-xs font-medium text-neutral-700">Style</span>
           </div>
 
-          <!-- Module & Eye Geometry -->
-          <div class="grid grid-cols-2 gap-2.5">
-            <!-- Module Style -->
-            <div class="flex flex-col gap-1">
-              <span class="text-caption font-medium text-neutral-600">Module Style</span>
-              <div class="segmented-track grid-cols-3 h-8" id="group-shape" role="radiogroup" aria-label="Module Style">
-                <button type="button" class="segmented-item active" data-shape="square" role="radio" aria-checked="true">Square</button>
-                <button type="button" class="segmented-item" data-shape="dots" role="radio" aria-checked="false">Dots</button>
-                <button type="button" class="segmented-item" data-shape="rounded" role="radio" aria-checked="false">Round</button>
-              </div>
+          <!-- Geometry Preset & Corner Eyes & Transparent BG -->
+          <div class="flex items-center gap-2">
+            <!-- Geometry Style -->
+            <div class="segmented-track grid-cols-2 h-8 flex-1 min-w-0" id="group-style" role="radiogroup" aria-label="Geometry Style">
+              <button type="button" class="segmented-item active flex items-center justify-center" data-style="classic" role="radio" aria-checked="true" title="Classic square">
+                <span class="text-xs font-medium">Classic</span>
+              </button>
+              <button type="button" class="segmented-item flex items-center justify-center" data-style="rounded" role="radio" aria-checked="false" title="Rounded modules">
+                <span class="text-xs font-medium">Rounded</span>
+              </button>
             </div>
 
-            <!-- Eye Style -->
-            <div class="flex flex-col gap-1">
-              <span class="text-caption font-medium text-neutral-600">Eye Frame</span>
-              <div class="segmented-track grid-cols-3 h-8" id="group-eye-shape" role="radiogroup" aria-label="Eye Frame Style">
-                <button type="button" class="segmented-item active" data-eye="square" role="radio" aria-checked="true">Square</button>
-                <button type="button" class="segmented-item" data-eye="circle" role="radio" aria-checked="false">Circle</button>
-                <button type="button" class="segmented-item" data-eye="rounded" role="radio" aria-checked="false">Round</button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Sliders: Smoothness & Margin -->
-          <div class="grid grid-cols-2 gap-2.5">
-            <!-- Module Smoothness / Corner Radius -->
-            <div class="flex flex-col gap-1">
-              <div class="flex items-center justify-between">
-                <span class="text-caption font-medium text-neutral-600">Roundness</span>
-                <span class="text-micro text-neutral-500 font-mono" id="smoothness-val">0%</span>
-              </div>
-              <div class="scrub-track h-8 select-none touch-none" id="smooth-scrub" role="slider" aria-label="Module roundness" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0">
-                <div class="scrub-fill"></div>
-                <div class="scrub-handle"></div>
-                <div class="scrub-notch"></div>
-                <span class="scrub-value font-mono">0</span>
-              </div>
+            <!-- Corner Eyes -->
+            <div class="segmented-track h-8 shrink-0" id="group-eye-choice" role="radiogroup" aria-label="Corner Eyes Shape">
+              <button type="button" class="segmented-item active flex items-center justify-center" data-eye-choice="default" role="radio" aria-checked="true" id="eye-btn-default" title="Auto shape" aria-label="Auto shape">
+                <svg id="eye-icon-auto" aria-hidden="true" class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="3" width="18" height="18" rx="1.5" />
+                </svg>
+              </button>
+              <button type="button" class="segmented-item flex items-center justify-center" data-eye-choice="circle" role="radio" aria-checked="false" title="Circle eyes" aria-label="Circle eyes">
+                <svg aria-hidden="true" class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="8.5" />
+                </svg>
+              </button>
+              <button type="button" class="segmented-item flex items-center justify-center" data-eye-choice="leaf" role="radio" aria-checked="false" title="Leaf eyes" aria-label="Leaf eyes">
+                <svg aria-hidden="true" class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 3.5h8.5v8.5a8.5 8.5 0 0 1-8.5 8.5H3.5v-8.5a8.5 8.5 0 0 1 8.5-8.5z" />
+                </svg>
+              </button>
             </div>
 
-            <!-- Margin (Quiet Zone) -->
-            <div class="flex flex-col gap-1">
-              <div class="flex items-center justify-between">
-                <span class="text-caption font-medium text-neutral-600">Quiet Zone</span>
-                <span class="text-micro text-neutral-500 font-mono" id="margin-val">2 mod</span>
-              </div>
-              <div class="scrub-track h-8 select-none touch-none" id="group-margin" role="slider" aria-label="Quiet zone margin in modules" aria-valuemin="0" aria-valuemax="12" aria-valuenow="2" tabindex="0">
-                <div class="scrub-fill"></div>
-                <div class="scrub-handle"></div>
-                <div class="scrub-notch"></div>
-                <span class="scrub-value font-mono">2</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Error Correction Level -->
-          <div class="flex flex-col gap-1">
-            <span class="text-caption font-medium text-neutral-600">Error Correction</span>
-            <div class="segmented-track grid-cols-4 h-8" id="group-ecc" role="radiogroup" aria-label="Error Correction Level">
-              <button type="button" class="segmented-item" data-ecc="L" role="radio" aria-checked="false" title="Level L (7% recovery)">L · 7%</button>
-              <button type="button" class="segmented-item active" data-ecc="M" role="radio" aria-checked="true" title="Level M (15% recovery)">M · 15%</button>
-              <button type="button" class="segmented-item" data-ecc="Q" role="radio" aria-checked="false" title="Level Q (25% recovery)">Q · 25%</button>
-              <button type="button" class="segmented-item" data-ecc="H" role="radio" aria-checked="false" title="Level H (30% recovery)">H · 30%</button>
-            </div>
+            <!-- Transparent Background Toggle Button -->
+            <button
+              type="button"
+              id="btn-toggle-transparent"
+              class="btn-tactile shrink-0 flex items-center justify-center rounded-lg"
+              title="Transparent background"
+              aria-label="Toggle Transparent Background"
+              aria-pressed="false"
+              data-tooltip="Transparent background"
+            >
+              <svg aria-hidden="true" class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                <defs>
+                  <clipPath id="tile-clip">
+                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                  </clipPath>
+                </defs>
+                <g clip-path="url(#tile-clip)">
+                  <rect x="3" y="3" width="4.5" height="4.5" />
+                  <rect x="12" y="3" width="4.5" height="4.5" />
+                  <rect x="7.5" y="7.5" width="4.5" height="4.5" />
+                  <rect x="16.5" y="7.5" width="4.5" height="4.5" />
+                  <rect x="3" y="12" width="4.5" height="4.5" />
+                  <rect x="12" y="12" width="4.5" height="4.5" />
+                  <rect x="7.5" y="16.5" width="4.5" height="4.5" />
+                  <rect x="16.5" y="16.5" width="4.5" height="4.5" />
+                </g>
+                <rect x="3" y="3" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="1.5" />
+              </svg>
+            </button>
           </div>
         </div>
 `;
 }
 
-function paintScrub() {
-  const sm = document.querySelector("#smooth-scrub");
-  if (sm) {
-    sm.setAttribute("aria-valuenow", state.moduleRadius);
-    sm.setAttribute("aria-valuetext", `${state.moduleRadius}%`);
-    paintScrubEl(sm, state.moduleRadius / 100, state.moduleRadius);
+function syncAutoEyeIcon(currentStyle) {
+  const autoEyeIcon = document.querySelector("#eye-icon-auto");
+  if (autoEyeIcon) {
+    autoEyeIcon.innerHTML =
+      currentStyle === "rounded"
+        ? '<rect x="3" y="3" width="18" height="18" rx="5" />'
+        : '<rect x="3" y="3" width="18" height="18" rx="1.5" />';
+  }
+
+  const defaultEyeBtn = document.querySelector("#eye-btn-default");
+  if (defaultEyeBtn) {
+    const tip = currentStyle === "rounded" ? "Auto (Rounded)" : "Auto (Square)";
+    defaultEyeBtn.title = tip;
+    defaultEyeBtn.dataset.tooltip = tip;
+    defaultEyeBtn.setAttribute("aria-label", tip);
   }
 }
 
-function paintScrubbers() {
-  paintScrub();
-  if (typeof cbPaintMargin === "function") {
-    cbPaintMargin();
-  } else {
-    const mg = document.querySelector("#group-margin");
-    if (mg) {
-      mg.setAttribute("aria-valuenow", state.margin);
-      mg.setAttribute("aria-valuetext", `${state.margin} modules`);
-      paintScrubEl(mg, state.margin / 12, state.margin);
-    }
+function syncTransparentButton() {
+  const btnTransparent = document.querySelector("#btn-toggle-transparent");
+  if (!btnTransparent) {
+    return;
   }
+  const isTrans = Boolean(state.isTransparent);
+  btnTransparent.classList.toggle("active", isTrans);
+  btnTransparent.setAttribute("aria-pressed", isTrans ? "true" : "false");
+  const tip = isTrans
+    ? "Disable transparent background"
+    : "Transparent background";
+  btnTransparent.title = tip;
+  btnTransparent.dataset.tooltip = tip;
+  btnTransparent.setAttribute("aria-label", tip);
 }
 
-export function syncSmoothSlider() {
-  state.margin = Math.min(12, Math.max(0, Math.round(state.margin) || 0));
-  paintScrubbers();
+export function syncStyleControls() {
+  const currentStyle = state.codeStyle || "classic";
+  const currentEyeChoice = state.eyeChoice || "default";
+
+  for (const btn of document.querySelectorAll("#group-style [data-style]")) {
+    const match = btn.dataset.style === currentStyle;
+    btn.classList.toggle("active", match);
+    btn.setAttribute("aria-checked", match ? "true" : "false");
+  }
+
+  for (const btn of document.querySelectorAll(
+    "#group-eye-choice [data-eye-choice]"
+  )) {
+    const match = btn.dataset.eyeChoice === currentEyeChoice;
+    btn.classList.toggle("active", match);
+    btn.setAttribute("aria-checked", match ? "true" : "false");
+  }
+
+  syncAutoEyeIcon(currentStyle);
+  syncTransparentButton();
+
+  const trackStyle = document.querySelector("#group-style");
+  if (trackStyle) {
+    updatePillPosition(trackStyle, false);
+  }
+  const trackEye = document.querySelector("#group-eye-choice");
+  if (trackEye) {
+    updatePillPosition(trackEye, false);
+  }
 }
 
 export function initGeometryControls(callbacks = {}, options = {}) {
   if (callbacks.onRenderQR) {
     cbRenderQR = callbacks.onRenderQR;
   }
-  if (callbacks.onMarkStale) {
-    cbMarkStale = callbacks.onMarkStale;
-  }
-  if (callbacks.onDrawQuietZone) {
-    cbDrawQuietZone = callbacks.onDrawQuietZone;
-  }
-  if (callbacks.onPaintMargin) {
-    cbPaintMargin = callbacks.onPaintMargin;
-  }
 
-  bindSegmentedGroup(
-    "#group-shape [data-shape]",
-    "shape",
-    (val) => {
-      state.moduleShape = val;
-      cbRenderQR();
-    },
-    options
-  );
-  bindSegmentedGroup(
-    "#group-eye-shape [data-eye]",
-    "eye",
-    (val) => {
-      state.eyeShape = val;
-      cbRenderQR();
-    },
-    options
-  );
-  bindSegmentedGroup(
-    "#group-ecc [data-ecc]",
-    "ecc",
-    (val) => {
-      state.eccLevel = val;
-      if (
-        state.customLogoUrl &&
-        (state.eccLevel === "L" || state.eccLevel === "M")
-      ) {
-        showToast("Emblem requires Q or H recovery");
-      }
-      cbRenderQR();
-    },
-    options
-  );
-
-  const setSmooth = (value, live) => {
-    const stepped = Math.round(value / 5) * 5;
-    state.moduleRadius = Math.min(100, Math.max(0, stepped));
-    paintScrub();
-    if (typeof cbMarkStale === "function") {
-      cbMarkStale();
-    }
+  const triggerRerender = () => {
     if (reducedMotion() || !renderMemo) {
       cbRenderQR();
       return;
     }
     if (anim) {
-      anim.snapR = Boolean(live);
+      anim.snapR = false;
     }
-    startAnim(cbRenderQR, (m) => {
-      if (typeof cbDrawQuietZone === "function") {
-        cbDrawQuietZone(m);
-      }
-    });
-    if (anim) {
-      anim.snapR = Boolean(live);
-    }
+    startAnim(cbRenderQR);
   };
 
-  const setMargin = (value) => {
-    state.margin = Math.min(12, Math.max(0, Math.round(value)));
-    if (typeof cbPaintMargin === "function") {
-      cbPaintMargin();
-    }
-    if (typeof cbMarkStale === "function") {
-      cbMarkStale();
-    }
-    if (reducedMotion() || !renderMemo) {
-      cbRenderQR();
-      return;
-    }
-    startAnim(cbRenderQR, (m) => {
-      if (typeof cbDrawQuietZone === "function") {
-        cbDrawQuietZone(m);
-      }
-    });
-  };
+  bindSegmentedGroup(
+    "#group-style [data-style]",
+    "style",
+    (val) => {
+      applyStylePreset(val);
+      syncStyleControls();
+      triggerRerender();
+    },
+    null,
+    options
+  );
 
-  const sm = document.querySelector("#smooth-scrub");
-  const mg = document.querySelector("#group-margin");
-  if (sm && mg) {
-    sm.querySelector(".scrub-value").dataset.unit = "%";
-    mg.querySelector(".scrub-value").dataset.unit = "mod";
-    const onHoldChange = (h) => setScrubHold(h);
-    const onFinish = () => {
-      if (anim) {
-        startAnim(cbRenderQR, (m) => {
-          if (typeof cbDrawQuietZone === "function") {
-            cbDrawQuietZone(m);
-          }
-        });
-      } else {
-        cbRenderQR();
-      }
-    };
-    makeScrubber(sm, {
-      signal: options.signal,
-      max: 100,
-      step: 5,
-      int: true,
-      magnet: false,
-      big: 10,
-      def: defaultState.moduleRadius,
-      get: () => state.moduleRadius,
-      set: setSmooth,
-      onHoldChange,
-      onFinish,
-      onRepaint: paintScrubbers,
-    });
-    makeScrubber(mg, {
-      signal: options.signal,
-      max: 12,
-      int: true,
-      big: 4,
-      def: defaultState.margin,
-      get: () => state.margin,
-      set: (v) => setMargin(v),
-      onHoldChange,
-      onFinish,
-      onRepaint: paintScrubbers,
-    });
-    paintScrubbers();
-    const ro = new ResizeObserver(() => paintScrubbers());
-    ro.observe(sm);
-    ro.observe(mg);
-    if (options.signal) {
-      options.signal.addEventListener("abort", () => ro.disconnect(), {
-        once: true,
-      });
-    }
+  bindSegmentedGroup(
+    "#group-eye-choice [data-eye-choice]",
+    "eyeChoice",
+    (val) => {
+      applyEyeChoice(val);
+      syncStyleControls();
+      triggerRerender();
+    },
+    null,
+    options
+  );
+
+  const btnTransparent = document.querySelector("#btn-toggle-transparent");
+  if (btnTransparent) {
+    const listenerOpts = options.signal
+      ? { signal: options.signal }
+      : undefined;
+    btnTransparent.addEventListener(
+      "click",
+      () => {
+        state.isTransparent = !state.isTransparent;
+        syncStyleControls();
+        triggerRerender();
+        showToast(
+          state.isTransparent
+            ? "Transparent background enabled"
+            : "Solid background enabled"
+        );
+      },
+      listenerOpts
+    );
   }
+
+  syncStyleControls();
 }

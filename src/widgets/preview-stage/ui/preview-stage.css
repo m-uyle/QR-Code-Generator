@@ -13,8 +13,8 @@
     linear-gradient(-45deg, transparent 75%, var(--surface-qr-checker) 75%);
   background-position:
     0 0,
-    0 8px,
-    8px -8px,
-    -8px 0;
+    0 var(--sp-2),
+    var(--sp-2) calc(-1 * var(--sp-2)),
+    calc(-1 * var(--sp-2)) 0;
   background-size: var(--preview-checker-size) var(--preview-checker-size);
 }

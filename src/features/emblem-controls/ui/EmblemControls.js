@@ -1,6 +1,7 @@
-import { state } from "../../../entities/qr-code/index.js";
+import { state, TYPE_ICONS } from "../../../entities/qr-code/index.js";
 import { MAX_LOGO_BYTES } from "../../../shared/config/index.js";
 import { checkImage, downscaleImage } from "../../../shared/lib/rasterizer.js";
+import { yieldToMain } from "../../../shared/lib/scheduler.js";
 import {
   bindSegmentedGroup,
   updatePillPosition,
@@ -12,86 +13,82 @@ const IMAGE_MIME_RE = /^image\//u;
 
 export function renderEmblemControls() {
   return `        <!-- SECTION 3: Mark Cutout -->
-        <div class="pt-3 border-t border-neutral-200 flex flex-col gap-2.5">
+        <div class="studio-section border-b border-neutral-200 flex flex-col gap-2">
           <div class="flex items-center justify-between">
             <span class="text-xs font-medium text-neutral-700">Center Emblem</span>
-            <label class="flex items-center gap-2 cursor-pointer select-none group" title="Use a built-in icon that matches the content type">
-              <div class="relative inline-flex items-center">
-                <input type="checkbox" id="toggle-builtin-icon" class="sr-only peer" aria-label="Use built-in type icon as emblem">
-                <div class="w-7 h-4 bg-neutral-200 peer-focus-visible:ring-2 peer-focus-visible:ring-neutral-400 rounded-full peer peer-checked:after:translate-x-3 after:empty-content after:absolute after:offset-knob after:surface-panel after:rounded-full after:h-3 after:w-3 after:transition-all after:shadow-sm peer-checked:bg-neutral-900 transition-colors"></div>
-              </div>
-              <span class="text-caption font-medium text-neutral-600 group-hover:text-neutral-900 transition-colors">Type icon</span>
-            </label>
           </div>
 
-          <div class="grid grid-cols-12 gap-2 items-center">
+          <div class="flex items-center gap-2">
             <!-- Dropzone Button -->
-            <div class="col-span-6 flex items-center gap-1.5">
-              <button type="button" id="dropzone-logo" class="btn-tactile flex-1 h-8 px-2.5 surface-control-field hover:surface-control-field border border-transparent hover:border-neutral-300 rounded-lg flex items-center justify-between cursor-pointer transition-colors" aria-label="Attach Emblem Image">
-                <input type="file" id="input-logo-file" accept="image/png,image/jpeg,image/svg+xml" class="hidden" aria-hidden="true" tabindex="-1">
-                <span class="flex items-center gap-1.5 overflow-hidden">
-                  <svg class="w-3.5 h-3.5 text-neutral-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                    <polyline points="17 8 12 3 7 8"></polyline>
-                    <line x1="12" y1="3" x2="12" y2="15"></line>
-                  </svg>
-                  <span class="text-xs font-medium text-neutral-700 truncate" id="logo-status-text">PNG / JPG / SVG</span>
-                </span>
-              </button>
-              <button type="button" id="btn-remove-logo" class="btn-icon-tactile hidden h-8 w-8 items-center justify-center text-xs text-red-500 hover:text-red-700 font-medium" aria-label="Remove emblem" title="Remove attached emblem">
-                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-              </button>
-            </div>
+            <button type="button" id="dropzone-logo" class="btn-tactile flex-1 min-w-0 h-8 px-2 surface-btn-secondary hover:surface-btn-secondary rounded-lg flex items-center justify-between cursor-pointer" aria-label="Attach emblem image: PNG / JPG / SVG" title="Upload image (PNG/JPG/SVG)">
+              <input type="file" id="input-logo-file" accept="image/png,image/jpeg,image/svg+xml" class="hidden" aria-hidden="true" tabindex="-1">
+              <span class="flex items-center gap-1 overflow-hidden min-w-0">
+                <svg class="w-3.5 h-3.5 text-neutral-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                <span class="text-xs font-medium text-neutral-700 truncate" id="logo-status-text">PNG / JPG / SVG</span>
+              </span>
+            </button>
+
+            <!-- Toggle Content Type Icon Button (activatable square button) -->
+            <button type="button" id="btn-toggle-type-icon" class="btn-tactile h-8 w-8 shrink-0 rounded-lg flex items-center justify-center cursor-pointer" aria-label="Use content icon as emblem" title="Use content icon" aria-pressed="false">
+              <svg id="emblem-type-icon-svg" class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                ${TYPE_ICONS[state.contentType || "url"] || TYPE_ICONS.url}
+              </svg>
+            </button>
+
+            <!-- Remove Custom Logo Button -->
+            <button type="button" id="btn-remove-logo" class="btn-icon-tactile hidden h-8 w-8 shrink-0 items-center justify-center text-xs text-red-500 hover:text-red-700 font-medium" aria-label="Remove emblem" title="Remove emblem">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
 
             <!-- Emblem Cutout Badge Shape -->
-            <div class="col-span-3">
-              <div class="segmented-track grid-cols-2 h-8" id="group-badge-shape" role="radiogroup" aria-label="Badge Shape">
-                <button type="button" class="segmented-item active" data-badge-shape="square" title="Square badge cutout" role="radio" aria-checked="true">
-                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
-                </button>
-                <button type="button" class="segmented-item" data-badge-shape="circle" title="Circle badge cutout" role="radio" aria-checked="false">
-                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>
-                </button>
-              </div>
-            </div>
-
-            <!-- Emblem Scale -->
-            <div class="col-span-3">
-              <div class="segmented-track grid-cols-3 h-8" id="group-icon-size" role="radiogroup" aria-label="Emblem Scale Size">
-                <button type="button" class="segmented-item" data-size="small" title="Small emblem (19%)" role="radio" aria-checked="false" aria-label="Small emblem size">
-                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24"><rect x="8.5" y="8.5" width="7" height="7" rx="1.2" fill="currentColor"/></svg>
-                </button>
-                <button type="button" class="segmented-item active" data-size="medium" title="Medium emblem (24%)" role="radio" aria-checked="true" aria-label="Medium emblem size">
-                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="1.8" fill="currentColor"/></svg>
-                </button>
-                <button type="button" class="segmented-item" data-size="large" title="Large emblem (28%)" role="radio" aria-checked="false" aria-label="Large emblem size">
-                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="2.5" fill="currentColor"/></svg>
-                </button>
-              </div>
+            <div class="segmented-track h-8 shrink-0" id="group-badge-shape" role="radiogroup" aria-label="Badge Shape">
+              <button type="button" class="segmented-item active flex items-center justify-center" data-badge-shape="square" title="Square cutout" aria-label="Square badge cutout" role="radio" aria-checked="true">
+                <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+              </button>
+              <button type="button" class="segmented-item flex items-center justify-center" data-badge-shape="circle" title="Circle cutout" aria-label="Circle badge cutout" role="radio" aria-checked="false">
+                <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/></svg>
+              </button>
             </div>
           </div>
         </div>`;
 }
 
-export function updateSizeIcons() {
-  const isCircle = state.logoBadgeShape === "circle";
-  const sizeIcons = {
-    small: isCircle
-      ? '<svg class="w-3.5 h-3.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.5" fill="currentColor"/></svg>'
-      : '<svg class="w-3.5 h-3.5" viewBox="0 0 24 24"><rect x="8.5" y="8.5" width="7" height="7" rx="1.2" fill="currentColor"/></svg>',
-    medium: isCircle
-      ? '<svg class="w-3.5 h-3.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6" fill="currentColor"/></svg>'
-      : '<svg class="w-3.5 h-3.5" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="1.8" fill="currentColor"/></svg>',
-    large: isCircle
-      ? '<svg class="w-3.5 h-3.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="currentColor"/></svg>'
-      : '<svg class="w-3.5 h-3.5" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="2.5" fill="currentColor"/></svg>',
-  };
+export function syncEmblemControls() {
+  const currentType = state.contentType || "url";
+  const iconSvg = document.querySelector("#emblem-type-icon-svg");
+  if (iconSvg) {
+    iconSvg.innerHTML = TYPE_ICONS[currentType] || TYPE_ICONS.url;
+  }
 
-  for (const btn of document.querySelectorAll("#group-icon-size [data-size]")) {
-    const { size } = btn.dataset;
-    if (size && sizeIcons[size]) {
-      btn.innerHTML = sizeIcons[size];
+  const btnTypeIcon = document.querySelector("#btn-toggle-type-icon");
+  const btnRemoveLogo = document.querySelector("#btn-remove-logo");
+  const logoStatus = document.querySelector("#logo-status-text");
+
+  if (state.customLogoUrl) {
+    btnTypeIcon?.classList.add("hidden");
+    btnRemoveLogo?.classList.remove("hidden");
+    if (logoStatus) {
+      logoStatus.textContent = "Emblem Attached";
     }
+  } else {
+    btnRemoveLogo?.classList.add("hidden");
+    btnTypeIcon?.classList.remove("hidden");
+    if (logoStatus) {
+      logoStatus.textContent = "PNG / JPG / SVG";
+    }
+  }
+
+  if (btnTypeIcon) {
+    const isActive = Boolean(state.builtinIcon);
+    btnTypeIcon.classList.toggle("active", isActive);
+    btnTypeIcon.setAttribute("aria-pressed", isActive ? "true" : "false");
+    const tip = isActive ? "Disable content icon" : "Use content icon";
+    btnTypeIcon.dataset.tooltip = tip;
+    btnTypeIcon.setAttribute("aria-label", tip);
   }
 }
 
@@ -130,32 +127,22 @@ export function initEmblemControls({ onRenderQR }, options = {}) {
     "badgeShape",
     (val) => {
       state.logoBadgeShape = val;
-      updateSizeIcons();
-      onRenderQR();
-    },
-    null,
-    { signal }
-  );
-  bindSegmentedGroup(
-    "#group-icon-size [data-size]",
-    "size",
-    (val) => {
-      state.iconSize = val;
       onRenderQR();
     },
     null,
     { signal }
   );
 
-  const toggleBuiltin = document.querySelector("#toggle-builtin-icon");
-  if (toggleBuiltin) {
-    toggleBuiltin.addEventListener(
-      "change",
-      (e) => {
-        state.builtinIcon = e.target.checked;
+  const btnToggleType = document.querySelector("#btn-toggle-type-icon");
+  if (btnToggleType) {
+    btnToggleType.addEventListener(
+      "click",
+      () => {
+        state.builtinIcon = !state.builtinIcon;
         if (state.builtinIcon) {
-          bumpEccForEmblem();
+          bumpEccForEmblem(false);
         }
+        syncEmblemControls();
         onRenderQR();
       },
       { signal }
@@ -165,7 +152,6 @@ export function initEmblemControls({ onRenderQR }, options = {}) {
   const dropzone = document.querySelector("#dropzone-logo");
   const fileInput = document.querySelector("#input-logo-file");
   const btnRemoveLogo = document.querySelector("#btn-remove-logo");
-  const logoStatus = document.querySelector("#logo-status-text");
 
   function handleFile(file) {
     if (!ALLOWED_IMAGE_TYPE_RE.test(file?.type)) {
@@ -185,6 +171,7 @@ export function initEmblemControls({ onRenderQR }, options = {}) {
     reader.onload = async (ev) => {
       let url;
       try {
+        await yieldToMain();
         url =
           file.type === "image/svg+xml"
             ? await checkImage(ev.target.result)
@@ -194,12 +181,7 @@ export function initEmblemControls({ onRenderQR }, options = {}) {
         return;
       }
       state.customLogoUrl = url;
-      if (logoStatus) {
-        logoStatus.textContent = file.name;
-      }
-      if (btnRemoveLogo) {
-        btnRemoveLogo.classList.remove("hidden");
-      }
+      syncEmblemControls();
       const bumped = bumpEccForEmblem(true);
       onRenderQR();
       showToast(
@@ -273,10 +255,7 @@ export function initEmblemControls({ onRenderQR }, options = {}) {
         if (fileInput) {
           fileInput.value = "";
         }
-        if (logoStatus) {
-          logoStatus.textContent = "PNG / JPG / SVG";
-        }
-        btnRemoveLogo.classList.add("hidden");
+        syncEmblemControls();
         onRenderQR();
         showToast("Emblem removed");
       },
@@ -346,4 +325,6 @@ export function initEmblemControls({ onRenderQR }, options = {}) {
       { signal }
     );
   }
+
+  syncEmblemControls();
 }

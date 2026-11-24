@@ -1,0 +1,77 @@
+/* Toggle Switch Component */
+.toggle-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle-switch-label {
+  font-size: var(--text-xs);
+  font-weight: var(--primitive-fw-medium);
+  color: var(--text-secondary);
+  transition: none;
+}
+
+.toggle-switch:hover .toggle-switch-label {
+  color: var(--text-primary);
+}
+
+.toggle-switch-control {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.toggle-switch-track {
+  display: inline-block;
+  position: relative;
+  width: var(--switch-width);
+  height: var(--switch-height);
+  border-radius: var(--switch-radius);
+  background-color: var(--switch-bg);
+  transition: none;
+}
+
+.toggle-switch:hover .toggle-switch-track {
+  background-color: var(--border-strong);
+}
+
+.toggle-switch-thumb {
+  position: absolute;
+  top: var(--switch-padding);
+  left: var(--switch-padding);
+  width: var(--switch-thumb-size);
+  height: var(--switch-thumb-size);
+  border-radius: var(--switch-thumb-radius);
+  background-color: var(--switch-thumb-bg);
+  box-shadow: var(--switch-thumb-shadow);
+  transition: none;
+}
+
+.toggle-switch-input:checked + .toggle-switch-track {
+  background-color: var(--switch-bg-checked);
+}
+
+.toggle-switch-input:checked + .toggle-switch-track .toggle-switch-thumb {
+  transform: translateX(
+    calc(
+      var(--switch-width) -
+      var(--switch-thumb-size) -
+      (var(--switch-padding) * 2)
+    )
+  );
+}
+
+.toggle-switch-input:focus-visible + .toggle-switch-track {
+  box-shadow: var(--switch-focus-shadow);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toggle-switch-track,
+  .toggle-switch-thumb,
+  .toggle-switch-label {
+    transition: none;
+  }
+}

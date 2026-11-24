@@ -15,60 +15,47 @@
   border-radius: var(--qr-rx, 0);
   backface-visibility: hidden;
   cursor: pointer;
-  filter: var(--preview-card-filter);
+  filter: none;
+  box-shadow: none;
   transform: perspective(var(--preview-perspective))
     rotateX(var(--tilt-rx, 0deg)) rotateY(var(--tilt-ry, 0deg))
     translateZ(var(--tilt-tz, 0))
     scale3d(var(--tilt-scale, 1), var(--tilt-scale, 1), 1);
   transform-style: preserve-3d;
-  will-change: transform, filter;
+  will-change: transform;
 }
 
 .tilt-card.is-placeholder {
-  border-radius: var(--r-3);
+  border-radius: var(--card-radius);
   background: var(--preview-placeholder-bg);
 }
 
 .contact-shadow {
-  position: absolute;
-  top: calc(50% + var(--contact-shadow-offset-y));
-  left: 50%;
-  width: var(--contact-shadow-width);
-  height: var(--contact-shadow-height);
-  background: var(--contact-shadow-bg);
-  filter: blur(var(--contact-shadow-blur));
-  pointer-events: none;
-  transform: translateX(-50%);
-  transition: var(--contact-shadow-transition);
-}
-
-#tilt-container:hover .contact-shadow {
-  opacity: 0.78;
-  transform: var(--contact-shadow-hover-transform);
+  display: none;
 }
 
 /* Container Queries: Responsive adaptation to parent widget/sidebar/modal width */
-@container (max-width: 420px) {
+@container (max-width: 26.25rem) {
   .tilt-card {
-    --preview-perspective: 600px;
+    --preview-perspective: 37.5rem;
 
     max-width: 100%;
   }
 
   .contact-shadow {
-    width: min(var(--contact-shadow-width), 180px);
-    height: 20px;
+    width: min(var(--contact-shadow-width), 11.25rem);
+    height: 1.25rem;
   }
 }
 
-@container (min-width: 600px) {
+@container (min-width: 37.5rem) {
   .tilt-card {
-    --preview-perspective: 1200px;
+    --preview-perspective: 75rem;
   }
 
   .contact-shadow {
-    width: min(var(--contact-shadow-width), 280px);
-    height: 32px;
+    width: min(var(--contact-shadow-width), 17.5rem);
+    height: 2rem;
   }
 }
 

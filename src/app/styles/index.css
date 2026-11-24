@@ -14,16 +14,18 @@
 
 /* Shared UI Components */
 @import "../../shared/ui/segmented-control/segmented-control.css";
-@import "../../shared/ui/scrubber/scrubber.css";
-@import "../../shared/ui/odometer/odometer.css";
+@import "../../shared/ui/dropdown/dropdown.css";
+@import "../../shared/ui/toggle-switch/toggle-switch.css";
 @import "../../shared/ui/tilt-card/tilt-card.css";
 @import "../../shared/ui/morph-button/morph-button.css";
 @import "../../shared/ui/toast/toast.css";
+@import "../../shared/ui/tooltip/tooltip.css";
 
 /* Features Layer */
 @import "../../features/payload-editor/ui/payload-editor.css";
+@import "../../features/geometry-controls/ui/geometry-controls.css";
 @import "../../features/emblem-controls/ui/emblem-controls.css";
-@import "../../features/scan-health/ui/scan-health.css";
+@import "../../features/qr-export/ui/qr-export.css";
 
 /* Widgets Layer */
 @import "../../widgets/generator-controls/ui/generator-controls.css";
